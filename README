@@ -24,8 +24,18 @@ Library LUA (script language, used for debug console, configuration, levels,...)
 Mac Details
 ===========
 
-This is inteded to build on a mac, and has some scripts to help make everything. See
-README-mac.md for more information on building the app bundle.
+This is intended to build on a mac, and has some scripts to help make everything. Get the original Fillets-NG
+distribution from http://fillets.sf.net
+
+This port assumes SDL builds in /opt/local, lua in /usr/local. 
+
+Run:
+
+bash$ ./configure-macosx
+bash$ make
+bash$ ./macfiles/make-bundle <version> /path/to/fillets-ng-data
+
+You should end up with a Fillets.app in the top level directory
 
 
 How to run

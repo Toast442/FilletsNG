@@ -16,6 +16,7 @@
 #include "OnStack.h"
 #include "OnWall.h"
 #include "OnStrongPad.h"
+#include "OptionAgent.h"
 
 #include <assert.h>
 
@@ -78,6 +79,8 @@ Rules::takeField(Field *field)
  * Accomplish last move in m_dir direction.
  * Mask to a new position.
  * Change model position.
+ *
+ * It complements the unmasking in freeOldPos().
  */
     void
 Rules::occupyNewPos()
@@ -164,14 +167,22 @@ Rules::checkDead(Cube::eAction lastAction)
     bool
 Rules::checkDeadMove()
 {
+    bool strict = OptionAgent::agent()->getAsBool("strict_rules", true);
+
     Cube::t_models resist = m_mask->getResist(Dir::DIR_UP);
     Cube::t_models::iterator end = resist.end();
     for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
         if (!(*i)->isAlive()) {
             Dir::eDir resist_dir = (*i)->rules()->getDir();
             if (resist_dir != Dir::DIR_NO && resist_dir != Dir::DIR_UP) {
-                if (!(*i)->rules()->isOnStack()) {
-                    return true;
+                if (strict) {
+                    if ((*i)->rules()->isOnHolderBacks()) {
+                        return true;
+                    }
+                } else {
+                    if (!(*i)->rules()->isOnStack()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -256,20 +267,21 @@ Rules::changeState()
 int
 Rules::actionOut()
 {
-    if (!m_model->isWall() && !m_model->isLost()
-            && !m_model->isBusy())
+    if (!m_model->isLost() && !m_model->isBusy() && m_dir == Dir::DIR_NO)
     {
         //NOTE: normal objects are not allowed to go out of screen
         if (m_model->shouldGoOut()) {
-            Dir::eDir borderDir = m_mask->getBorderDir();
-            if (borderDir != Dir::DIR_NO) {
-                m_dir = borderDir;
-                m_outDepth += 1;
-            }
-            else {
-                if (m_outDepth > 0) {
-                    m_model->change_goOut();
-                    m_outDepth = -1;
+            if (m_mask->isFullyOut()) {
+                m_model->change_goOut();
+                m_outDepth = -1;
+            } else {
+                Dir::eDir borderDir = m_mask->getBorderDir();
+                if (borderDir != Dir::DIR_NO) {
+                    m_model->change_goingOut();
+                    moveDirBrute(borderDir);
+                    m_outDepth += 1;
+                } else {
+                    m_outDepth = 0;
                 }
             }
         }
@@ -298,15 +310,6 @@ Rules::clearLastFall()
     bool last = m_lastFall;
     m_lastFall = false;
     return last;
-}
-//-----------------------------------------------------------------
-/**
- * Unmask from old position.
- */
-    void
-Rules::finishRound()
-{
-    freeOldPos();
 }
 //-----------------------------------------------------------------
 /**
@@ -388,7 +391,56 @@ Rules::isOnStrongPad(Cube::eWeight weight)
 {
     return isOnCond(OnStrongPad(weight));
 }
+//-----------------------------------------------------------------
+/**
+ * Returns true if the object is laying just on alive holders
+ * and they all have at least a part of their backs
+ * directly under this object.
+ *
+ * Pushing the object would kill all the holders.
+ * The object would be free to fall.
+ */
+    bool
+Rules::isOnHolderBacks()
+{
+    unsigned int numDirectHolders = 0;
+    Cube::t_models resist = m_mask->getResist(Dir::DIR_DOWN);
+    Cube::t_models::iterator end = resist.end();
+    for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
+        if ((*i)->isAlive()) {
+            ++numDirectHolders;
+        }
+    }
 
+    Cube::t_models pads = getPads();
+    MarkMask::unique(&pads);
+    return numDirectHolders == pads.size();
+}
+//-----------------------------------------------------------------
+/**
+ * Returns all alive fish and walls under this object.
+ */
+    Cube::t_models
+Rules::getPads()
+{
+    Cube::t_models pads;
+    m_mask->unmask();
+
+    Cube::t_models resist = m_mask->getResist(Dir::DIR_DOWN);
+    Cube::t_models::iterator end = resist.end();
+    for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
+        if ((*i)->isAlive() || (*i)->isWall()) {
+            pads.push_back(*i);
+        } else {
+            Cube::t_models distance_pads = (*i)->rules()->getPads();
+            pads.insert(pads.end(), distance_pads.begin(),
+                    distance_pads.end());
+        }
+    }
+
+    m_mask->mask();
+    return pads;
+}
 //-----------------------------------------------------------------
 /**
  * Whether object is falling.
@@ -498,6 +550,9 @@ Rules::canMoveOthers(Dir::eDir dir, Cube::eWeight power)
     Cube::t_models resist = m_mask->getResist(dir);
     Cube::t_models::iterator end = resist.end();
     for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
+        if (m_model->shouldGoOut() && (*i)->isBorder()) {
+            continue;
+        }
         if (!(*i)->rules()->canDir(dir, power)) {
             result = false;
             break;
@@ -522,6 +577,10 @@ Rules::canDir(Dir::eDir dir, Cube::eWeight power)
 {
     bool result = false;
     if (!m_model->isAlive() && power >= m_model->getWeight()) {
+        // A special case when outgoing object is pushing with FIXED power.
+        if (m_model->isWall() && !m_model->shouldGoOut()) {
+            return false;
+        }
         result = canMoveOthers(dir, power);
     }
 
@@ -609,11 +668,11 @@ Rules::moveDirBrute(Dir::eDir dir)
 
     Cube::t_models resist = m_mask->getResist(dir);
     Cube::t_models::iterator end = resist.end();
-    if (end != resist.begin()) {
-        m_pushing = true;
-    }
     for (Cube::t_models::iterator i = resist.begin(); i != end; ++i) {
-        (*i)->rules()->moveDirBrute(dir);
+        if (!(*i)->isBorder()) {
+            (*i)->rules()->moveDirBrute(dir);
+            m_pushing = true;
+        }
     }
 
     m_dir = dir;

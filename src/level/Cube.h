@@ -60,6 +60,7 @@ class Cube : public NoCopy {
         void setBusy(bool busy) { m_busy = busy; }
 
         void change_die();
+        void change_goingOut();
         void change_goOut();
         void change_remove();
         void change_turnSide();
@@ -74,6 +75,7 @@ class Cube : public NoCopy {
         bool isWrong() const { return m_goal.isWrong(this); }
         bool isWall() const { return m_weight >= Cube::FIXED; }
         bool shouldGoOut() const { return m_goal.shouldGoOut(); }
+        bool isBorder() const { return m_index == -1; }
 
         eWeight getWeight() const { return m_weight; }
         eWeight getPower() const { return m_power; }

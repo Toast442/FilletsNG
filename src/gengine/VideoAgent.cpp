@@ -73,7 +73,6 @@ VideoAgent::own_shutdown()
     void
 VideoAgent::setIcon(const Path &file)
 {
-	return;
     SDL_Surface *icon = IMG_Load(file.getNative().c_str());
     if (NULL == icon) {
         throw ImgException(ExInfo("Load")

@@ -65,18 +65,18 @@ am__libgengine_a_SOURCES_DIST = AgentPack.cpp AgentPack.h \
 	ResDialogPack.h ResImagePack.cpp ResImagePack.h \
 	ResourceException.h ResourcePack.h ResCache.h SDLException.cpp \
 	SDLException.h SDLSoundAgent.cpp SDLSoundAgent.h \
-	ScriptAgent.cpp ScriptAgent.h ScriptException.h \
-	ScriptState.cpp ScriptState.h SimpleMsg.h SoundAgent.cpp \
-	SoundAgent.h StringMsg.cpp StringMsg.h StringTool.cpp \
-	StringTool.h TimerAgent.cpp TimerAgent.h UnknownMsgException.h \
-	V2.h VideoAgent.cpp VideoAgent.h PlannedDialog.cpp \
-	PlannedDialog.h minmax.h ResSoundPack.cpp ResSoundPack.h \
-	Environ.cpp Environ.h InputHandler.cpp InputHandler.h \
-	InputProvider.h MouseStroke.cpp MouseStroke.h def-script.cpp \
-	def-script.h options-script.cpp options-script.h SysVideo.cpp \
-	SysVideo.h Drawable.h MultiDrawer.cpp MultiDrawer.h \
-	PathException.h Scripter.cpp Scripter.h FsPath.h FsPath.cpp \
-	FsPath_boost.cpp
+	SDLMusicLooper.cpp SDLMusicLooper.h ScriptAgent.cpp \
+	ScriptAgent.h ScriptException.h ScriptState.cpp ScriptState.h \
+	SimpleMsg.h SoundAgent.cpp SoundAgent.h StringMsg.cpp \
+	StringMsg.h StringTool.cpp StringTool.h TimerAgent.cpp \
+	TimerAgent.h UnknownMsgException.h V2.h VideoAgent.cpp \
+	VideoAgent.h PlannedDialog.cpp PlannedDialog.h minmax.h \
+	ResSoundPack.cpp ResSoundPack.h Environ.cpp Environ.h \
+	InputHandler.cpp InputHandler.h InputProvider.h \
+	MouseStroke.cpp MouseStroke.h def-script.cpp def-script.h \
+	options-script.cpp options-script.h SysVideo.cpp SysVideo.h \
+	Drawable.h MultiDrawer.cpp MultiDrawer.h PathException.h \
+	Scripter.cpp Scripter.h FsPath.h FsPath.cpp FsPath_boost.cpp
 @WITH_BOOST_FALSE@am__objects_1 = FsPath.$(OBJEXT)
 @WITH_BOOST_TRUE@am__objects_1 = FsPath_boost.$(OBJEXT)
 am_libgengine_a_OBJECTS = AgentPack.$(OBJEXT) BaseAgent.$(OBJEXT) \
@@ -88,9 +88,10 @@ am_libgengine_a_OBJECTS = AgentPack.$(OBJEXT) BaseAgent.$(OBJEXT) \
 	Name.$(OBJEXT) OptionAgent.$(OBJEXT) OptionParams.$(OBJEXT) \
 	Path.$(OBJEXT) Random.$(OBJEXT) ResDialogPack.$(OBJEXT) \
 	ResImagePack.$(OBJEXT) SDLException.$(OBJEXT) \
-	SDLSoundAgent.$(OBJEXT) ScriptAgent.$(OBJEXT) \
-	ScriptState.$(OBJEXT) SoundAgent.$(OBJEXT) StringMsg.$(OBJEXT) \
-	StringTool.$(OBJEXT) TimerAgent.$(OBJEXT) VideoAgent.$(OBJEXT) \
+	SDLSoundAgent.$(OBJEXT) SDLMusicLooper.$(OBJEXT) \
+	ScriptAgent.$(OBJEXT) ScriptState.$(OBJEXT) \
+	SoundAgent.$(OBJEXT) StringMsg.$(OBJEXT) StringTool.$(OBJEXT) \
+	TimerAgent.$(OBJEXT) VideoAgent.$(OBJEXT) \
 	PlannedDialog.$(OBJEXT) ResSoundPack.$(OBJEXT) \
 	Environ.$(OBJEXT) InputHandler.$(OBJEXT) MouseStroke.$(OBJEXT) \
 	def-script.$(OBJEXT) options-script.$(OBJEXT) \
@@ -160,9 +161,12 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 RANLIB = @RANLIB@
 SDL_CFLAGS = @SDL_CFLAGS@
 SDL_CONFIG = @SDL_CONFIG@
@@ -245,18 +249,19 @@ libgengine_a_SOURCES = AgentPack.cpp AgentPack.h BaseAgent.cpp \
 	Random.h ResDialogPack.cpp ResDialogPack.h ResImagePack.cpp \
 	ResImagePack.h ResourceException.h ResourcePack.h ResCache.h \
 	SDLException.cpp SDLException.h SDLSoundAgent.cpp \
-	SDLSoundAgent.h ScriptAgent.cpp ScriptAgent.h \
-	ScriptException.h ScriptState.cpp ScriptState.h SimpleMsg.h \
-	SoundAgent.cpp SoundAgent.h StringMsg.cpp StringMsg.h \
-	StringTool.cpp StringTool.h TimerAgent.cpp TimerAgent.h \
-	UnknownMsgException.h V2.h VideoAgent.cpp VideoAgent.h \
-	PlannedDialog.cpp PlannedDialog.h minmax.h ResSoundPack.cpp \
-	ResSoundPack.h Environ.cpp Environ.h InputHandler.cpp \
-	InputHandler.h InputProvider.h MouseStroke.cpp MouseStroke.h \
-	def-script.cpp def-script.h options-script.cpp \
-	options-script.h SysVideo.cpp SysVideo.h Drawable.h \
-	MultiDrawer.cpp MultiDrawer.h PathException.h Scripter.cpp \
-	Scripter.h FsPath.h $(FSPATH_IMPL)
+	SDLSoundAgent.h SDLMusicLooper.cpp SDLMusicLooper.h \
+	ScriptAgent.cpp ScriptAgent.h ScriptException.h \
+	ScriptState.cpp ScriptState.h SimpleMsg.h SoundAgent.cpp \
+	SoundAgent.h StringMsg.cpp StringMsg.h StringTool.cpp \
+	StringTool.h TimerAgent.cpp TimerAgent.h UnknownMsgException.h \
+	V2.h VideoAgent.cpp VideoAgent.h PlannedDialog.cpp \
+	PlannedDialog.h minmax.h ResSoundPack.cpp ResSoundPack.h \
+	Environ.cpp Environ.h InputHandler.cpp InputHandler.h \
+	InputProvider.h MouseStroke.cpp MouseStroke.h def-script.cpp \
+	def-script.h options-script.cpp options-script.h SysVideo.cpp \
+	SysVideo.h Drawable.h MultiDrawer.cpp MultiDrawer.h \
+	PathException.h Scripter.cpp Scripter.h FsPath.h \
+	$(FSPATH_IMPL)
 all: all-am
 
 .SUFFIXES:
@@ -336,6 +341,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ResImagePack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ResSoundPack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SDLException.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SDLMusicLooper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SDLSoundAgent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScriptAgent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ScriptState.Po@am__quote@

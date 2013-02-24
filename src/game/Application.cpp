@@ -31,6 +31,7 @@
 #include "StringMsg.h"
 
 #include "SDL.h"
+#include <stdio.h> // for fflush, stdout
 
 //-----------------------------------------------------------------
 Application::Application()
@@ -133,6 +134,12 @@ Application::prepareOptions(int argc, char *argv[])
             "Path to the worldmap file");
     params.addParam("cache_images", OptionParams::TYPE_BOOLEAN,
             "Cache images (default=true)");
+    params.addParam("sound_frequency", OptionParams::TYPE_NUMBER,
+            "Sound sample rate (default=44100)");
+    params.addParam("strict_rules", OptionParams::TYPE_BOOLEAN,
+            "Disallow pushing of partially supported objects (default=true)");
+    params.addParam("replay_level", OptionParams::TYPE_STRING,
+            "Replay the solution for the given level codename");
     OptionAgent::agent()->parseCmdOpt(argc, argv, params);
 }
 //-----------------------------------------------------------------
@@ -211,6 +218,9 @@ Application::receiveSimple(const SimpleMsg *msg)
         if (level >= Log::LEVEL_ERROR) {
             OptionAgent::agent()->setParam("loglevel", level);
         }
+    }
+    else if (msg->equalsName("flush_stdout")) {
+        fflush(stdout);
     }
     else {
         LOG_WARNING(ExInfo("unknown msg")

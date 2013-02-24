@@ -21,6 +21,12 @@ Library LUA (script language, used for debug console, configuration, levels,...)
 - liblua50, www.lua.org
 - liblualib50
 
+Mac Details
+===========
+
+This is inteded to build on a mac, and has some scripts to help make everything. See
+README-mac.md for more information on building the app bundle.
+
 
 How to run
 ==========

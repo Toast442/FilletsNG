@@ -1,0 +1,10 @@
+*.o
+*.a
+Makefile
+Fillets.app
+src/game/fillets
+fillets
+.deps
+.DS_Store
+config.log
+config.status

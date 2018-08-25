@@ -18,6 +18,9 @@ class Path;
 class VideoAgent : public BaseAgent, public MultiDrawer {
     AGENT(VideoAgent, Name::VIDEO_NAME);
     private:
+        SDL_Window * m_window;
+        SDL_Renderer * m_renderer;
+        SDL_Texture *m_texture;
         SDL_Surface *m_screen;
         bool m_fullscreen;
 

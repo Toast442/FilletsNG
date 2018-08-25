@@ -96,8 +96,23 @@ OptionAgent::prepareDataPaths()
 {
     registerWatcher("systemdir");
     registerWatcher("userdir");
-    OptionAgent::agent()->setParam("systemdir", SYSTEM_DATA_DIR);
 
+#if MACOS
+    char resourcePath[PATH_MAX];
+    char * basePath = SDL_GetBasePath();
+    strcpy(resourcePath, basePath);
+    strcat(resourcePath,"/fillets/share/games/fillets-ng");
+    OptionAgent::agent()->setParam("systemdir", resourcePath);
+    SDL_free(basePath);
+#else
+    OptionAgent::agent()->setParam("systemdir", SYSTEM_DATA_DIR);
+#endif
+
+#if MACOS
+    char * prefPath = SDL_GetPrefPath("Toast442.org","Fillets");
+    OptionAgent::agent()->setParam("userdir", prefPath);
+    SDL_free(prefPath);
+#else
     std::string userdir = "";
     const char *home = getenv("HOME");
     if (home) {
@@ -107,6 +122,7 @@ OptionAgent::prepareDataPaths()
     else {
         readUserConfig();
     }
+#endif
 }
 //-----------------------------------------------------------------
 /**

@@ -26,7 +26,7 @@ InputHandler::mouseState(const V2 &loc, Uint8 buttons)
 }
 //-----------------------------------------------------------------
 bool
-InputHandler::isPressed(SDLKey key) const
+InputHandler::isPressed(Uint8 key) const
 {
     return m_pressed && m_pressed[key];
 }

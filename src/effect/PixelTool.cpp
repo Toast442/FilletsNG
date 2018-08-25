@@ -41,7 +41,7 @@ PixelTool::getColor(SDL_Surface *surface, int x, int y)
 {
     SDL_Color color;
     SDL_GetRGBA(getPixel(surface, x, y), surface->format,
-            &color.r, &color.g, &color.b, &color.unused);
+            &color.r, &color.g, &color.b, &color.a);
     return color;
 }
 //-----------------------------------------------------------------
@@ -55,7 +55,7 @@ PixelTool::putColor(SDL_Surface *surface, int x, int y,
         const SDL_Color &color)
 {
     Uint32 pixel = SDL_MapRGBA(surface->format,
-            color.r, color.g, color.b, color.unused);
+            color.r, color.g, color.b, color.a);
     putPixel(surface, x, y, pixel);
 }
 //-----------------------------------------------------------------
@@ -96,7 +96,7 @@ PixelTool::putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
  * Decodes pixel from memory.
  * @param bpp color depth (8, 16, 24, 32)
  * @param p pointer to the memory
- * @return pixel in bpp color depth 
+ * @return pixel in bpp color depth
  * @throws LogicException for unknown color depth
  */
     Uint32
@@ -105,9 +105,9 @@ PixelTool::unpackPixel(Uint8 bpp, Uint8 *p)
     switch(bpp) {
         case 1: // 8bit
             return *p;
-        case 2: // 16bit 
+        case 2: // 16bit
             return *reinterpret_cast<Uint16*>(p);
-        case 3: // 24bit 
+        case 3: // 24bit
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 return p[0] << 16 | p[1] << 8 | p[2];
             }

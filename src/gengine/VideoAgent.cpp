@@ -53,7 +53,10 @@ VideoAgent::own_init()
 VideoAgent::own_update()
 {
     drawOn(m_screen);
-    SDL_Flip(m_screen);
+    SDL_UpdateTexture(m_texture, NULL, m_screen->pixels, m_screen->pitch);
+    SDL_RenderClear(m_renderer);
+    SDL_RenderCopy(m_renderer, m_texture, NULL, NULL);
+    SDL_RenderPresent(m_renderer);
 }
 //-----------------------------------------------------------------
 /**
@@ -78,8 +81,7 @@ VideoAgent::setIcon(const Path &file)
         throw ImgException(ExInfo("Load")
                 .addInfo("file", file.getNative()));
     }
-
-    SDL_WM_SetIcon(icon, NULL);
+    SDL_SetWindowIcon(m_window, icon);
     SDL_FreeSurface(icon);
 }
 
@@ -98,7 +100,9 @@ VideoAgent::initVideoMode()
     int screen_width = options->getAsInt("screen_width", 640);
     int screen_height = options->getAsInt("screen_height", 480);
 
-    SysVideo::setCaption(options->getParam("caption", "A game"));
+
+    SDL_SetWindowTitle(m_window, options->getParam("caption", "A game").c_str());
+
     if (NULL == m_screen
             || m_screen->w != screen_width
             || m_screen->h != screen_height)
@@ -118,29 +122,39 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
     int screen_bpp = options->getAsInt("screen_bpp", 32);
     int videoFlags = getVideoFlags();
     m_fullscreen = options->getAsBool("fullscreen", false);
-    if (m_fullscreen) {
-        videoFlags |= SDL_FULLSCREEN;
+
+    if(0 == m_window) {
+
+        m_window = SDL_CreateWindow("Fish Fillets",
+                        SDL_WINDOWPOS_UNDEFINED,
+                        SDL_WINDOWPOS_UNDEFINED,
+                        screen_width, screen_height,
+                        m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+
+        m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+    } else {
+        SDL_SetWindowSize(m_window, screen_width, screen_height);
+        SDL_FreeSurface(m_screen);
+        SDL_DestroyTexture(m_texture);
     }
 
     //TODO: check VideoModeOK and available ListModes
-    SDL_Surface *newScreen =
-        SDL_SetVideoMode(screen_width, screen_height, screen_bpp, videoFlags);
-    if (NULL == newScreen && (videoFlags & SDL_FULLSCREEN)) {
-        LOG_WARNING(ExInfo("unable to use fullscreen resolution, trying windowed")
-                .addInfo("width", screen_width)
-                .addInfo("height", screen_height)
-                .addInfo("bpp", screen_bpp));
+    SDL_Surface *newScreen = SDL_CreateRGBSurface(0, screen_width, screen_height, screen_bpp,
+                                        0x00FF0000,
+                                        0x0000FF00,
+                                        0x000000FF,
+                                        0xFF000000);
 
-        videoFlags = videoFlags & ~SDL_FULLSCREEN;
-        newScreen = SDL_SetVideoMode(screen_width, screen_height, screen_bpp,
-                videoFlags);
-    }
+    m_texture = SDL_CreateTexture(m_renderer,
+                    SDL_PIXELFORMAT_ARGB8888,
+                    SDL_TEXTUREACCESS_STREAMING,
+                    screen_width, screen_height);
 
     if (newScreen) {
         m_screen = newScreen;
         //NOTE: must be two times to change MouseState
-        SDL_WarpMouse(screen_width / 2, screen_height / 2);
-        SDL_WarpMouse(screen_width / 2, screen_height / 2);
+        SDL_WarpMouseInWindow(m_window, screen_width / 2, screen_height / 2);
+        SDL_WarpMouseInWindow(m_window, screen_width / 2, screen_height / 2);
     }
     else {
         throw SDLException(ExInfo("SetVideoMode")
@@ -158,8 +172,6 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
 VideoAgent::getVideoFlags()
 {
     int videoFlags  = 0;
-    videoFlags |= SDL_HWPALETTE;
-    videoFlags |= SDL_ANYFORMAT;
     videoFlags |= SDL_SWSURFACE;
 
     return videoFlags;
@@ -171,7 +183,7 @@ VideoAgent::getVideoFlags()
     void
 VideoAgent::toggleFullScreen()
 {
-    int success = SDL_WM_ToggleFullScreen(m_screen);
+    int success = SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (success) {
         m_fullscreen = !m_fullscreen;
     }

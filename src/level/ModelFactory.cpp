@@ -121,10 +121,10 @@ ModelFactory::createUnit(const std::string &kind)
         StringTool::startsWith(kind, "fish_EXTRA"))
     {
         KeyControl extrafish;
-        extrafish.setUp(SDLK_LAST);
-        extrafish.setDown(SDLK_LAST);
-        extrafish.setLeft(SDLK_LAST);
-        extrafish.setRight(SDLK_LAST);
+        extrafish.setUp(0);
+        extrafish.setDown(0);
+        extrafish.setLeft(0);
+        extrafish.setRight(0);
         result = new Unit(extrafish, parseExtraControlSym(kind));
     }
     return result;

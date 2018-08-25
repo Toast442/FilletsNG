@@ -51,6 +51,15 @@ SDLSoundAgent::reinit()
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
         throw SDLException(ExInfo("SDL_InitSubSystem"));
     }
+    SDL_AudioSpec spec, have;
+    spec.freq =48000;
+    spec.format=AUDIO_S16SYS;
+    spec.channels = 2;
+    spec.samples=4096;
+    spec.callback = 0;
+    SDL_OpenAudio(&spec, &have);
+
+    Mix_Init(MIX_INIT_FLAC | MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
 
     int frequency =
        OptionAgent::agent()->getAsInt("sound_frequency", 44100);

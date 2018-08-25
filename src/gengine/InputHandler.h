@@ -31,7 +31,7 @@ class InputHandler : public InputProvider, public NoCopy {
         virtual void keyUp(const KeyStroke &/*stroke*/) {}
         virtual void mouseEvent(const MouseStroke &/*buttons*/) {}
 
-        virtual bool isPressed(SDLKey key) const;
+        virtual bool isPressed(Uint8 key) const;
         virtual bool isLeftPressed() const;
         virtual bool isMiddlePressed() const;
         virtual bool isRightPressed() const;

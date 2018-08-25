@@ -14,11 +14,11 @@
 /**
  * Create new keystroke from event.
  */
-KeyStroke::KeyStroke(const SDL_keysym &keysym)
+KeyStroke::KeyStroke(const SDL_Keysym &keysym)
 {
     m_sym = keysym.sym;
     m_mod = modStrip(keysym.mod);
-    m_unicode = keysym.unicode;
+    m_unicode = 0;//keysym.unicode;
 }
 //-----------------------------------------------------------------
 /**
@@ -26,10 +26,10 @@ KeyStroke::KeyStroke(const SDL_keysym &keysym)
  * NOTE: KMOD_ALT mean (KMOD_LALT and KMOD_RALT),
  * i.e. either ALTs pressed!
  *
- * @param sym SDLKey
+ * @param sym SDL_Keycode
  * @param mod SDLMod ored
  */
-KeyStroke::KeyStroke(SDLKey sym, int mod)
+KeyStroke::KeyStroke(SDL_Keycode sym, int mod)
 {
     m_sym = sym;
     m_mod = modStrip(mod);

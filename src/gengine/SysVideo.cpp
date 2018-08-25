@@ -15,7 +15,7 @@
     void
 SysVideo::setCaption(const std::string &title)
 {
-    SDL_WM_SetCaption(title.c_str(), NULL);
+//    SDL_WM_SetCaption(title.c_str(), NULL);
 }
 #else
 #include "SDL_syswm.h"
@@ -37,7 +37,7 @@ SysVideo::setCaption(const std::string &title)
     }
 
     if (!done) {
-        SDL_WM_SetCaption(title.c_str(), NULL);
+//        SDL_WM_SetCaption(title.c_str(), NULL);
     }
 }
 //-----------------------------------------------------------------

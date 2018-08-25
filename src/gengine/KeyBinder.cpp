@@ -12,7 +12,7 @@
 #include "LogicException.h"
 #include "BaseMsg.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 //-----------------------------------------------------------------
 KeyBinder::~KeyBinder()

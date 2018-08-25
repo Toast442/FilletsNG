@@ -4,7 +4,7 @@
 #include "BaseAgent.h"
 #include "Name.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Delay and framerame.

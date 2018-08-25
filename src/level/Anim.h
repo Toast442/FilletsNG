@@ -8,7 +8,7 @@ class ResImagePack;
 #include "NoCopy.h"
 #include "V2.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Animation sprite.

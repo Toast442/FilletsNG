@@ -6,7 +6,7 @@ class Path;
 #include "ResourcePack.h"
 #include "ResCache.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Image resources and image loading.

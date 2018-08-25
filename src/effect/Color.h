@@ -1,7 +1,7 @@
 #ifndef HEADER_COLOR_H
 #define HEADER_COLOR_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Constructor for SDL_Color.

@@ -22,7 +22,7 @@
 #include "LevelStatus.h"
 #include "Level.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 //-----------------------------------------------------------------
     void

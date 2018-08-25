@@ -5,7 +5,7 @@ class Shape;
 
 #include "Cube.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Creator of images from shapes.

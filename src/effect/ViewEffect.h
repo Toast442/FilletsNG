@@ -1,7 +1,7 @@
 #ifndef HEADER_VIEWEFFECT_H
 #define HEADER_VIEWEFFECT_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Graphic effect before blit.

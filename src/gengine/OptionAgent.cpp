@@ -27,6 +27,8 @@
 #include <string.h> //strlen
 #include <locale.h> //setlocale
 
+#include <SDL2/SDL.h>
+
 #ifndef LC_MESSAGES
 #define LC_MESSAGES LC_CTYPE
 #endif

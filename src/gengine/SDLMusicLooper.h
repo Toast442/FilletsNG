@@ -3,8 +3,8 @@
 
 class Path;
 
-#include "SDL.h"
-#include "SDL_mixer.h"
+#include "SDL2/SDL.h"
+#include "SDL2_mixer/SDL_mixer.h"
 
 /**
  * Playing music in a loop.

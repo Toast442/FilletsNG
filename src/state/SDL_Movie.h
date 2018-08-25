@@ -2,7 +2,7 @@
 #define HEADER_SDLMOVIE_H
 #ifdef HAVE_SMPEG
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 #include "smpeg/smpeg.h"
 
@@ -113,7 +113,7 @@ public:
     {
         MaxScaleX = maxscalex;
         MaxScaleY = maxscaley;
-        
+
         // Limit how much we can scale by
         MaxScale = (maxscalex > maxscaley ? maxscaley : maxscalex);
 

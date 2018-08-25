@@ -9,7 +9,7 @@ class Picture;
 #include "Drawable.h"
 #include "GameState.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include <string>
 
 /**

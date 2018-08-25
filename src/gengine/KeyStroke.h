@@ -1,7 +1,7 @@
 #ifndef HEADER_KEYSTROKE_H
 #define HEADER_KEYSTROKE_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include <string>
 
 /**

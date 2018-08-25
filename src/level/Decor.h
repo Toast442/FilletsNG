@@ -3,7 +3,7 @@
 
 class View;
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Screen decoration.

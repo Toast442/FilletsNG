@@ -5,7 +5,7 @@ class Path;
 
 #include "ResourcePack.h"
 
-#include "SDL_mixer.h"
+#include "SDL2_mixer/SDL_mixer.h"
 
 /**
  * Sound resources.

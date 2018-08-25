@@ -10,7 +10,7 @@
 
 #include "Log.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #if !defined(HAVE_X11) && !defined(WIN32)
     void
 SysVideo::setCaption(const std::string &title)

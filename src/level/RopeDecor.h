@@ -7,7 +7,7 @@ class View;
 #include "Decor.h"
 #include "V2.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Draw rope between two models.

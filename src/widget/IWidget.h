@@ -6,7 +6,7 @@ class MouseStroke;
 #include "Drawable.h"
 #include "V2.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Widget interface.

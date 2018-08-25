@@ -1,7 +1,7 @@
 #ifndef HEADER_SURFACETOOL_H
 #define HEADER_SURFACETOOL_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Surface rutines.

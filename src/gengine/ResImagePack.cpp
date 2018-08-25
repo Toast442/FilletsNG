@@ -14,7 +14,7 @@
 #include "OptionAgent.h"
 #include "Log.h"
 
-#include "SDL_image.h"
+#include "SDL2_image/SDL_image.h"
 
 // The set cache size allows to contain all fish images and animations
 // from level 'barrel'.

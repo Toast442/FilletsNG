@@ -1,7 +1,7 @@
 #ifndef HEADER_KEYCONTROL_H
 #define HEADER_KEYCONTROL_H
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /**
  * Keyboard controls.

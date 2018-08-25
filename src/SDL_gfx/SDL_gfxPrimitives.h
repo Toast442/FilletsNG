@@ -1,9 +1,9 @@
-/* 
+/*
 
  SDL_gfxPrimitives: graphics primitives for SDL
 
  LGPL (c) A. Schiffler
- 
+
 */
 
 #ifndef _SDL_gfxPrimitives_h
@@ -14,7 +14,7 @@
 #define M_PI	3.141592654
 #endif
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus

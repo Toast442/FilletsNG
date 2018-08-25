@@ -30,7 +30,7 @@
 #include "SimpleMsg.h"
 #include "StringMsg.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 #include <stdio.h> // for fflush, stdout
 
 //-----------------------------------------------------------------

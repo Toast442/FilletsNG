@@ -110,6 +110,16 @@ VideoAgent::initVideoMode()
         changeVideoMode(screen_width, screen_height);
     }
 }
+
+V2 VideoAgent::scaleMouseLoc(const V2 & v)
+{
+    int x, y;
+
+    SDL_GetWindowSize(m_window, &x, &y);
+    return V2(v.getX() * ((float)m_screen->w / (float)x), v.getY() * ((float)m_screen->h / (float)y));
+}
+
+
 //-----------------------------------------------------------------
 /**
  * Init new video mode.
@@ -132,7 +142,10 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
                         m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 
         m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+        SDL_RenderSetLogicalSize(m_renderer, screen_width, screen_height);
     } else {
+        SDL_RenderSetLogicalSize(m_renderer, screen_width, screen_height);
         SDL_SetWindowSize(m_window, screen_width, screen_height);
         SDL_FreeSurface(m_screen);
         SDL_DestroyTexture(m_texture);
@@ -183,11 +196,9 @@ VideoAgent::getVideoFlags()
     void
 VideoAgent::toggleFullScreen()
 {
-    int success = SDL_SetWindowFullscreen(m_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if (success) {
-        m_fullscreen = !m_fullscreen;
-    }
-    else {
+    m_fullscreen = !m_fullscreen;
+    int success = SDL_SetWindowFullscreen(m_window, m_fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    if (!success) {
         //NOTE: some platforms need reinit video
         changeVideoMode(m_screen->w, m_screen->h);
     }

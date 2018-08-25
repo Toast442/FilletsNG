@@ -18,7 +18,7 @@
 #include "Slider.h"
 #include "SelectLang.h"
 #include "RadioBox.h"
-
+#include "VideoAgent.h"
 #include "Font.h"
 #include "Labels.h"
 #include "SimpleMsg.h"
@@ -83,7 +83,11 @@ MenuOptions::own_updateState()
         prepareMenu();
         own_resumeState();
     }
-    std::string tooltip = m_container->getTip(getInput()->getMouseLoc());
+
+    V2 mouseLoc = VideoAgent::agent()->scaleMouseLoc(getInput()->getMouseLoc());
+
+
+    std::string tooltip = m_container->getTip(mouseLoc);
     m_statusBar->setLabel(tooltip);
 }
 //-----------------------------------------------------------------

@@ -9,6 +9,7 @@
 #include "MouseControl.h"
 
 #include "Controls.h"
+#include "VideoAgent.h"
 #include "View.h"
 #include "FinderAlg.h"
 #include "Unit.h"
@@ -32,7 +33,7 @@ bool
 MouseControl::mouseDrive(const InputProvider *input) const
 {
     bool moved = false;
-    V2 field = m_view->getFieldPos(input->getMouseLoc());
+    V2 field = m_view->getFieldPos(VideoAgent::agent()->scaleMouseLoc(input->getMouseLoc()));
     if (input->isLeftPressed()) {
         moved = moveTo(field);
     }

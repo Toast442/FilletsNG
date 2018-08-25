@@ -163,7 +163,8 @@ WorldMap::own_cleanState()
     void
 WorldMap::watchCursor()
 {
-    V2 mouseLoc = getInput()->getMouseLoc();
+    V2 mouseLoc = VideoAgent::agent()->scaleMouseLoc(getInput()->getMouseLoc());
+
     if (!m_lastMouseLoc.equals(mouseLoc)) {
         m_lastMouseLoc = mouseLoc;
         m_selected = m_startNode->findSelected(mouseLoc);

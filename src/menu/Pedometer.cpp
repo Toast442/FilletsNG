@@ -12,7 +12,7 @@
 #include "Level.h"
 #include "PedoInput.h"
 #include "LayeredPicture.h"
-
+#include "VideoAgent.h"
 #include "ResImagePack.h"
 #include "StateManager.h"
 #include "NodeDrawer.h"
@@ -121,7 +121,7 @@ Pedometer::own_updateState()
     void
 Pedometer::watchCursor()
 {
-    V2 mouseLoc = getInput()->getMouseLoc();
+    V2 mouseLoc = VideoAgent::agent()->scaleMouseLoc(getInput()->getMouseLoc());
     m_activeMask = m_rack->getMaskAtWorld(mouseLoc);
     if (m_activeMask == m_maskRun
             || m_activeMask == m_maskReplay

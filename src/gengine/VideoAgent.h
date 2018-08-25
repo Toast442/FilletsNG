@@ -6,6 +6,7 @@ class Path;
 #include "BaseAgent.h"
 #include "MultiDrawer.h"
 #include "Name.h"
+#include "V2.h"
 
 #include "SDL2/SDL.h"
 
@@ -36,7 +37,9 @@ class VideoAgent : public BaseAgent, public MultiDrawer {
     public:
         virtual void receiveSimple(const SimpleMsg *msg);
         virtual void receiveString(const StringMsg *msg);
-
+        SDL_Window * window() { return m_window; }
+        SDL_Surface * surface() { return m_screen; }
+        V2 scaleMouseLoc(const V2 & v);
         void initVideoMode();
 };
 

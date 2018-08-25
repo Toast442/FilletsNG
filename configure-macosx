@@ -1,7 +1,0 @@
-#!/bin/sh
-
-EPREFIX=./Fillets.app/Contents/MacOS
-PREFIX=./Fillets.app/Contents/Resources/fillets
-SDLPREFIX=/opt/local
-
-./configure --with-sdl-prefix="${SDLPREFIX}" --with-sdl_exec-prefix="${SDLPREFIX}"  --disable-dependency-tracking --prefix="${PREFIX}" --exec-prefix="${EPREFIX}" --bindir=\$\{exec_prefix\}

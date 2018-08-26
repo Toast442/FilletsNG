@@ -125,7 +125,6 @@ Font::renderText(const std::string &text, const SDL_Color &color) const
                 .addInfo("g", color.g)
                 .addInfo("b", color.b));
     }
-
     SDL_Surface *raw_surface = TTF_RenderUTF8_Shaded(m_ttfont, content.c_str(),
             color, m_bg);
     if (!raw_surface) {
@@ -134,12 +133,14 @@ Font::renderText(const std::string &text, const SDL_Color &color) const
     }
 
     //NOTE: at index 0 is bg color
-    if (SDL_SetColorKey(raw_surface, SDL_TRUE, 0) < 0) {
+    Uint32 key = SDL_MapRGB(raw_surface->format, m_bg.r, m_bg.g, m_bg.b);
+    if (SDL_SetColorKey(raw_surface, SDL_TRUE, key) < 0) {
         throw SDLException(ExInfo("SetColorKey"));
     }
 
     SDL_Surface *surface = SDL_ConvertSurfaceFormat(raw_surface,SDL_PIXELFORMAT_RGBA32,0);
-//    SDL_Surface *surface = SDL_DisplayFormat(raw_surface);
+    key = SDL_MapRGB(surface->format, m_bg.r, m_bg.g, m_bg.b);
+    SDL_SetColorKey(surface, SDL_TRUE, key);
     if (!surface) {
         throw SDLException(ExInfo("DisplayFormat"));
     }

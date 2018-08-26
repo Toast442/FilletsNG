@@ -34,19 +34,19 @@ GFX_OBJS=./SDL_gfx/SDL_gfxPrimitives.o
 
 ALLOBJS=$(WIDGET_OBJS) $(PLAN_OBJS) $(EFFECT_OBJS) $(OPTION_OBJS) $(GAME_OBJS) $(STATE_OBJS) $(GENGINE_OBJS) $(MENU_OBJS) $(LEVEL_OBJS) $(GFX_OBJS)
 
-#CCACHE=/usr/local/bin/ccache
+CCACHE=/usr/local/bin/ccache
 CC=$(CCACHE) clang
 CPP=$(CCACHE) clang++
 DEFINES=-DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\" \
 	-DPACKAGE_URL=\"\" -DPACKAGE=\"fillets-ng\" -DVERSION=\"$(VERSION)\" -D_GNU_SOURCE=1 -D_THREAD_SAFE \
 	-DSYSTEM_DATA_DIR=\""./Fillets.app/Contents/Resources/fillets/share/games/fillets-ng"\" -DMACOS
-MISC_FLAGS=-g -O2 -Wall -W -Wpointer-arith -Wcast-qual -Wcast-align -Woverloaded-virtual -Wconversion -Wshadow
+MISC_FLAGS=-g -O2 -Wall -W -Wpointer-arith -Wcast-qual -Wcast-align -Woverloaded-virtual -Wconversion -Wshadow -mmacosx-version-min=10.9
 INC_FLAGS=-Isrc/effect -Isrc/gengine -Isrc/plan -Isrc/widget -Isrc/menu -Isrc/level -Isrc/option -Isrc/state -Isrc/SDL_gfx -I$(PREFIX)/include
 
 FRAMEWORKDIR=-F$(PREFIX)/Library/Frameworks/SDL_2.0
 FRAMEWORKS=$(FRAMEWORKDIR) -framework SDL2 -framework SDL2_image -framework SDL2_mixer -framework SDL2_ttf
 
-LFLAGS=-L$(PREFIX)/lib -llua -llualib -lc++ -framework Cocoa $(FRAMEWORKS)
+LFLAGS=-L$(PREFIX)/lib -llua -llualib -lc++ -framework Cocoa $(FRAMEWORKS) -mmacosx-version-min=10.9
 
 CFLAGS=$(DEFINES) $(MISC_FLAGS) $(INC_FLAGS) $(FRAMEWORKDIR)
 

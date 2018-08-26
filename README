@@ -5,6 +5,15 @@ http://fillets.sf.net
 Compile requirements
 ====================
 
+** WARNING ** 
+This source has been modified from the original in order to port to SDL2 and fix things up for running on a Mac. While the souce
+should still compile in general for other platforms, the automake stuff here will have to be modified to search for the SDL2
+libraries, etc.
+
+The requirements below are now out of date - the equiavalent SDL 2 libraries should be used instead.
+
+** END WARNING **
+
 Library SDL = Simple DirectMedia Layer (video, input, sound)
 - libSDL >= 1.2, www.libsdl.org
 
@@ -27,15 +36,13 @@ Mac Details
 This is intended to build on a mac, and has some scripts to help make everything. Get the original Fillets-NG
 distribution from http://fillets.sf.net
 
-This port assumes SDL builds in /opt/local, lua in /usr/local. 
-
 Run:
 
-bash$ ./configure-macosx
-bash$ make
+bash$ make -f ./macfiles/makefile
 bash$ ./macfiles/make-bundle <version> /path/to/fillets-ng-data
 
-You should end up with a Fillets.app in the top level directory
+You should end up with a Fillets.app in the top level directory. You may have to modify some paths in the 
+macfiles/makefile to correspond with where your copies of the SDL2 frameworks are.
 
 
 How to run

@@ -25,6 +25,11 @@ class VideoAgent : public BaseAgent, public MultiDrawer {
         SDL_Surface *m_screen;
         bool m_fullscreen;
 
+        int m_ww, m_wh;
+        int m_lw, m_lh;
+        float m_sx, m_sy;
+        int m_offsetX, m_offsetY;
+
     private:
         void setIcon(const Path &file);
         void changeVideoMode(int screen_width, int screen_height);

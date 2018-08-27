@@ -113,10 +113,18 @@ VideoAgent::initVideoMode()
 
 V2 VideoAgent::scaleMouseLoc(const V2 & v)
 {
-    int x, y;
+    int ww, wh;
+    int lw, lh;
+    float sx, sy;
 
-    SDL_GetWindowSize(m_window, &x, &y);
-    return V2(v.getX() * ((float)m_screen->w / (float)x), v.getY() * ((float)m_screen->h / (float)y));
+    SDL_GetWindowSize(m_window, &ww, &wh);
+    SDL_RenderGetScale(m_renderer, &sx, &sy);
+    SDL_RenderGetLogicalSize(m_renderer, &lw, &lh);
+
+    int offsetX = ((ww-((float)lw * sx))/2);
+    int offsetY = ((wh-((float)lh * sy))/2);
+
+    return V2((v.getX() - offsetX) / sx, (v.getY() - offsetY)/ sy);
 }
 
 

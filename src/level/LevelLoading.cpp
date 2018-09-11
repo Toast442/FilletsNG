@@ -43,7 +43,7 @@ LevelLoading::isLoading() const
 LevelLoading::loadGame(const std::string &moves)
 {
     m_loadedMoves = moves;
-    m_loadSpeed = min(50, max(5, m_loadedMoves.size() / 150));
+    m_loadSpeed = min(50, max(5, (int)(m_loadedMoves.size() / 150)));
 }
 //-----------------------------------------------------------------
 /**

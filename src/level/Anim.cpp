@@ -244,7 +244,7 @@ static int
 decodeInt(const std::string &input)
 {
     bool ok;
-    int result = StringTool::readInt(input.c_str(), &ok);
+    int result = (int)StringTool::readInt(input.c_str(), &ok);
     if (!ok) {
         LOG_WARNING(ExInfo("invalid int")
                 .addInfo("input", input));

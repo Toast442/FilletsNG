@@ -55,7 +55,7 @@ class Controls : public StepCounter, public NoCopy {
         void controlEvent(const KeyStroke &stroke);
         bool activateSelected(const Cube *occupant);
 
-        virtual int getStepCount() const { return m_moves.size(); }
+        virtual int getStepCount() const { return (int)m_moves.size(); }
         virtual std::string getMoves() const { return m_moves; }
         virtual bool isPowerful() const;
         virtual bool isDangerousMove() const;

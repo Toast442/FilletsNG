@@ -150,7 +150,7 @@ LevelStatus::createPoster() const
 int
 LevelStatus::compareToBest()
 {
-    int moves = readSolvedMoves().size();
+    size_t moves = readSolvedMoves().size();
     int result = 1;
     if (m_bestMoves > 0) {
         if (m_bestMoves < moves) {

@@ -16,7 +16,7 @@ class ModelList {
         const Cube::t_models *m_models;
     public:
         ModelList(const Cube::t_models *models);
-        int size() const { return m_models->size(); }
+        int size() const { return (int)m_models->size(); }
 
         void drawOn(View *view) const;
         bool stoneOn(Landslip *slip) const;

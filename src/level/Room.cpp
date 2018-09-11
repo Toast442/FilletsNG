@@ -119,7 +119,7 @@ Room::addModel(Cube *new_model, Unit *new_unit)
         m_controls->addUnit(new_unit);
     }
 
-    int model_index = m_models.size() - 1;
+    int model_index = (int)m_models.size() - 1;
     new_model->setIndex(model_index);
     return model_index;
 }

@@ -110,8 +110,8 @@ SDLMusicLooper::lookupLoopData(const Path &file, int multiplier)
         return;
     }
 
-    m_startLoop = strtol(lines[0].c_str(), NULL, 10) * multiplier;
-    m_endLoop = strtol(lines[1].c_str(), NULL, 10) * multiplier;
+    m_startLoop = (int)strtol(lines[0].c_str(), NULL, 10) * multiplier;
+    m_endLoop = (int)strtol(lines[1].c_str(), NULL, 10) * multiplier;
     if ((unsigned int)m_endLoop > m_music->alen) {
         m_endLoop = m_music->alen;
     }

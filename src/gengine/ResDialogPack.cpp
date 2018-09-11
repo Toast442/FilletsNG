@@ -29,7 +29,7 @@ ResDialogPack::matchScore(const std::string &first,
         const std::string &second) const
 {
     int score = 0;
-    int minSize = min(first.size(), second.size());
+    int minSize = min((int)first.size(), (int)second.size());
     for (int i = 0; i < minSize; ++i) {
         if (first[i] == second[i]) {
             score++;

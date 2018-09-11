@@ -139,7 +139,7 @@ OptionAgent::prepareLang()
     if (getParam("lang").empty()) {
         char *form = setlocale(LC_MESSAGES, NULL);
         if (form) {
-            int size = min(5, strlen(form));
+            int size = min(5, (int)strlen(form));
             if (size >= 2) {
                 setParam("lang", std::string(form, size));
             }

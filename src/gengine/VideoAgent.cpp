@@ -127,7 +127,6 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
 {
     OptionAgent *options = OptionAgent::agent();
     int screen_bpp = options->getAsInt("screen_bpp", 32);
-    int videoFlags = getVideoFlags();
     m_fullscreen = options->getAsBool("fullscreen", false);
 
     if(0 == m_window) {

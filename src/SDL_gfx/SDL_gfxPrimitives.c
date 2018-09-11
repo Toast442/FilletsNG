@@ -3269,7 +3269,7 @@ int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int c
 {
     int result;
     int i;
-    int x, y, xa, xb;
+    int y, xa, xb;
     int miny, maxy;
     int x1, y1;
     int x2, y2;

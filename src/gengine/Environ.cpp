@@ -134,7 +134,7 @@ Environ::getAsInt(const std::string &name,
 {
     std::string value = getParam(name);
     bool ok;
-    int result = StringTool::readInt(value.c_str(), &ok);
+    int result = (int)StringTool::readInt(value.c_str(), &ok);
     if (!ok) {
         if (value != "") {
             LOG_WARNING(ExInfo("cannot recognize numeric value")

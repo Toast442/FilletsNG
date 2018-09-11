@@ -178,7 +178,7 @@ Pedometer::runReplay()
     void
 Pedometer::drawOn(SDL_Surface *screen)
 {
-    drawNumbers(screen, m_solution.size());
+    drawNumbers(screen, (int)m_solution.size());
 }
 //-----------------------------------------------------------------
 /**

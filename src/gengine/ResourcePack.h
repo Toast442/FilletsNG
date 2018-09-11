@@ -122,7 +122,7 @@ class ResourcePack : public INamed {
         T result = NULL;
         typename t_reses::size_type count = m_reses.count(name);
         if (count > 0) {
-            result = getRes(name, Random::randomInt(count));
+            result = getRes(name, Random::randomInt((int)count));
         }
         else {
             LOG_WARNING(ExInfo("no such resource")
@@ -137,7 +137,7 @@ class ResourcePack : public INamed {
      */
     int countRes(const std::string &name)
     {
-        return m_reses.count(name);
+        return (int)m_reses.count(name);
     }
     //-----------------------------------------------------------------
     std::string toString() const

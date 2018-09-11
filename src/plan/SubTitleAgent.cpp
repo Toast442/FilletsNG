@@ -116,7 +116,7 @@ void
 SubTitleAgent::trimRest(std::string &buffer)
 {
     int i;
-    for (i = buffer.size() - 1; i >= 0; --i) {
+    for (i = (int)buffer.size() - 1; i >= 0; --i) {
         if (buffer[i] == ' ' &&
                 !(i - 2 >= 0 && buffer[i - 2] == ' '))
         {

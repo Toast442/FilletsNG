@@ -20,7 +20,7 @@ OptionParams::addParam(const std::string &name, eType type,
     Param param(type, help);
     m_params.insert(
                 std::pair<std::string,Param>(name, param));
-    int paramSize = name.size() + getType(type).size();
+    int paramSize = (int)(name.size() + getType(type).size());
     if (paramSize > m_maxSize) {
         m_maxSize = paramSize;
     }
@@ -32,7 +32,7 @@ OptionParams::getHelp(const Environ * /*options*/) const
     std::string help;
     t_params::const_iterator end = m_params.end();
     for (t_params::const_iterator i = m_params.begin(); i != end; ++i) {
-        int paramSize = i->first.size() + getType(i->second.type).size();
+        int paramSize = (int)(i->first.size() + getType(i->second.type).size());
         std::string space = std::string(m_maxSize - paramSize, ' ');
         help += "  " + i->first + "=<" + getType(i->second.type) + ">";
         help += space + "    " + i->second.help + "\n";

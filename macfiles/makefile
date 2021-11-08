@@ -1,4 +1,4 @@
-VERSION=1.0.1-4
+VERSION=1.0.1-7
 PREFIX=$(HOME)/projects/root
 WIDGET_OBJS=./widget/HBox.o ./widget/IWidget.o ./widget/Labels.o ./widget/WiBox.o ./widget/WiPicture.o ./widget/VBox.o \
 	./widget/WiButton.o ./widget/WiStatusBar.o ./widget/WiLabel.o ./widget/Slider.o ./widget/WiContainer.o \

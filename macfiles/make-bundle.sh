@@ -14,7 +14,10 @@ cp macfiles/PkgInfo ${BUNDLE}/Contents
 cp macfiles/Fillets.icns ${BUNDLE}/Contents/Resources
 
 mkdir -p ${BUNDLE}/Contents/Frameworks
-cp -a $SDL/* ${BUNDLE}/Contents/Frameworks
+cp -a $SDL/SDL2.framework ${BUNDLE}/Contents/Frameworks
+cp -a $SDL/SDL2_image.framework ${BUNDLE}/Contents/Frameworks
+cp -a $SDL/SDL2_mixer.framework ${BUNDLE}/Contents/Frameworks
+cp -a $SDL/SDL2_ttf.framework ${BUNDLE}/Contents/Frameworks
 
 if [ "$2" != "" ]
 then

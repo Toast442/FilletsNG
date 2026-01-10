@@ -45,7 +45,7 @@ INC_FLAGS=-Isrc/effect -Isrc/gengine -Isrc/plan -Isrc/widget -Isrc/menu -Isrc/le
 FRAMEWORKDIR=-F$(PREFIX)/Library/Frameworks/SDL_2.0
 FRAMEWORKS=$(FRAMEWORKDIR) -arch x86_64 -arch arm64 -framework SDL2 -framework SDL2_image -framework SDL2_mixer -framework SDL2_ttf
 
-LFLAGS=-L$(PREFIX)/lib -llua -llualib -lc++ -framework Cocoa $(FRAMEWORKS) -mmacosx-version-min=10.11
+LFLAGS=-L$(PREFIX)/lib -llua -llualib -lc++ -framework Cocoa $(FRAMEWORKS) -mmacosx-version-min=10.11 -Wl,-headerpad_max_install_names
 
 CFLAGS=$(DEFINES) $(MISC_FLAGS) $(INC_FLAGS) $(FRAMEWORKDIR)
 

@@ -8,3 +8,4 @@ fillets
 .DS_Store
 config.log
 config.status
+/data

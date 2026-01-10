@@ -38,7 +38,8 @@ distribution from http://fillets.sf.net
 
 Run:
 
-bash$ make -f ./macfiles/makefile
+bash$ make -f ./macfiles/makefile clean
+bash$ make -f ./macfiles/makefile all
 bash$ ./macfiles/make-bundle <version> /path/to/fillets-ng-data
 
 You should end up with a Fillets.app in the top level directory. You may have to modify some paths in the 

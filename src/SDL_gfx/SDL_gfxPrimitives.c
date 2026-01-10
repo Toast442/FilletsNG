@@ -41,24 +41,24 @@ int fastPixelColorNolock(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 color)
 	p = (Uint8 *) dst->pixels + y * dst->pitch + x * bpp;
 	switch (bpp) {
 	case 1:
-	    *p = color;
+	    *p = (Uint8)color;
 	    break;
 	case 2:
-	    *(Uint16 *) p = color;
+	    memcpy(p, &color, sizeof(Uint16));
 	    break;
 	case 3:
 	    if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-		p[0] = (color >> 16) & 0xff;
-		p[1] = (color >> 8) & 0xff;
-		p[2] = color & 0xff;
+		p[0] = (Uint8)((color >> 16) & 0xff);
+		p[1] = (Uint8)((color >> 8) & 0xff);
+		p[2] = (Uint8)(color & 0xff);
 	    } else {
-		p[0] = color & 0xff;
-		p[1] = (color >> 8) & 0xff;
-		p[2] = (color >> 16) & 0xff;
+		p[0] = (Uint8)(color & 0xff);
+		p[1] = (Uint8)((color >> 8) & 0xff);
+		p[2] = (Uint8)((color >> 16) & 0xff);
 	    }
 	    break;
 	case 4:
-	    *(Uint32 *) p = color;
+	    memcpy(p, &color, sizeof(Uint32));
 	    break;
 	}			/* switch */
 
@@ -84,24 +84,24 @@ int fastPixelColorNolockNoclip(SDL_Surface * dst, Sint16 x, Sint16 y, Uint32 col
     p = (Uint8 *) dst->pixels + y * dst->pitch + x * bpp;
     switch (bpp) {
     case 1:
-	*p = color;
+	*p = (Uint8)color;
 	break;
     case 2:
-	*(Uint16 *) p = color;
+	memcpy(p, &color, sizeof(Uint16));
 	break;
     case 3:
 	if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-	    p[0] = (color >> 16) & 0xff;
-	    p[1] = (color >> 8) & 0xff;
-	    p[2] = color & 0xff;
+	    p[0] = (Uint8)((color >> 16) & 0xff);
+	    p[1] = (Uint8)((color >> 8) & 0xff);
+	    p[2] = (Uint8)(color & 0xff);
 	} else {
-	    p[0] = color & 0xff;
-	    p[1] = (color >> 8) & 0xff;
-	    p[2] = (color >> 16) & 0xff;
+	    p[0] = (Uint8)(color & 0xff);
+	    p[1] = (Uint8)((color >> 8) & 0xff);
+	    p[2] = (Uint8)((color >> 16) & 0xff);
 	}
 	break;
     case 4:
-	*(Uint32 *) p = color;
+	memcpy(p, &color, sizeof(Uint32));
 	break;
     }				/* switch */
 
@@ -186,7 +186,7 @@ int _putPixelAlpha(SDL_Surface * surface, Sint16 x, Sint16 y, Uint32 color, Uint
 	switch (surface->format->BytesPerPixel) {
 	case 1:{		/* Assuming 8-bpp */
 		if (alpha == 255) {
-		    *((Uint8 *) surface->pixels + y * surface->pitch + x) = color;
+		    *((Uint8 *) surface->pixels + y * surface->pitch + x) = (Uint8)color;
 		} else {
 		    Uint8 *pixel = (Uint8 *) surface->pixels + y * surface->pitch + x;
 
@@ -197,18 +197,18 @@ int _putPixelAlpha(SDL_Surface * surface, Sint16 x, Sint16 y, Uint32 color, Uint
 		    Uint8 sG = surface->format->palette->colors[color].g;
 		    Uint8 sB = surface->format->palette->colors[color].b;
 
-		    dR = dR + ((sR - dR) * alpha >> 8);
-		    dG = dG + ((sG - dG) * alpha >> 8);
-		    dB = dB + ((sB - dB) * alpha >> 8);
+		    dR = (Uint8)(dR + ((sR - dR) * alpha >> 8));
+		    dG = (Uint8)(dG + ((sG - dG) * alpha >> 8));
+		    dB = (Uint8)(dB + ((sB - dB) * alpha >> 8));
 
-		    *pixel = SDL_MapRGB(surface->format, dR, dG, dB);
+		    *pixel = (Uint8)SDL_MapRGB(surface->format, dR, dG, dB);
 		}
 	    }
 	    break;
 
 	case 2:{		/* Probably 15-bpp or 16-bpp */
 		if (alpha == 255) {
-		    *((Uint16 *) surface->pixels + y * surface->pitch / 2 + x) = color;
+		    *((Uint16 *) surface->pixels + y * surface->pitch / 2 + x) = (Uint16)color;
 		} else {
 		    Uint16 *pixel = (Uint16 *) surface->pixels + y * surface->pitch / 2 + x;
 		    Uint32 dc = *pixel;
@@ -219,24 +219,24 @@ int _putPixelAlpha(SDL_Surface * surface, Sint16 x, Sint16 y, Uint32 color, Uint
 		    if (Amask)
 			A = ((dc & Amask) + (((color & Amask) - (dc & Amask)) * alpha >> 8)) & Amask;
 
-		    *pixel = R | G | B | A;
+		    *pixel = (Uint16)(R | G | B | A);
 		}
 	    }
 	    break;
 
 	case 3:{		/* Slow 24-bpp mode, usually not used */
 		Uint8 *pix = (Uint8 *) surface->pixels + y * surface->pitch + x * 3;
-		Uint8 rshift8 = surface->format->Rshift / 8;
-		Uint8 gshift8 = surface->format->Gshift / 8;
-		Uint8 bshift8 = surface->format->Bshift / 8;
-		Uint8 ashift8 = surface->format->Ashift / 8;
+		Uint8 rshift8 = (Uint8)(surface->format->Rshift / 8);
+		Uint8 gshift8 = (Uint8)(surface->format->Gshift / 8);
+		Uint8 bshift8 = (Uint8)(surface->format->Bshift / 8);
+		Uint8 ashift8 = (Uint8)(surface->format->Ashift / 8);
 
 
 		if (alpha == 255) {
-		    *(pix + rshift8) = color >> surface->format->Rshift;
-		    *(pix + gshift8) = color >> surface->format->Gshift;
-		    *(pix + bshift8) = color >> surface->format->Bshift;
-		    *(pix + ashift8) = color >> surface->format->Ashift;
+		    *(pix + rshift8) = (Uint8)(color >> surface->format->Rshift);
+		    *(pix + gshift8) = (Uint8)(color >> surface->format->Gshift);
+		    *(pix + bshift8) = (Uint8)(color >> surface->format->Bshift);
+		    *(pix + ashift8) = (Uint8)(color >> surface->format->Ashift);
 		} else {
 		    Uint8 dR, dG, dB, dA = 0;
 		    Uint8 sR, sG, sB, sA = 0;
@@ -248,15 +248,15 @@ int _putPixelAlpha(SDL_Surface * surface, Sint16 x, Sint16 y, Uint32 color, Uint
 		    dB = *((pix) + bshift8);
 		    dA = *((pix) + ashift8);
 
-		    sR = (color >> surface->format->Rshift) & 0xff;
-		    sG = (color >> surface->format->Gshift) & 0xff;
-		    sB = (color >> surface->format->Bshift) & 0xff;
-		    sA = (color >> surface->format->Ashift) & 0xff;
+		    sR = (Uint8)((color >> surface->format->Rshift) & 0xff);
+		    sG = (Uint8)((color >> surface->format->Gshift) & 0xff);
+		    sB = (Uint8)((color >> surface->format->Bshift) & 0xff);
+		    sA = (Uint8)((color >> surface->format->Ashift) & 0xff);
 
-		    dR = dR + ((sR - dR) * alpha >> 8);
-		    dG = dG + ((sG - dG) * alpha >> 8);
-		    dB = dB + ((sB - dB) * alpha >> 8);
-		    dA = dA + ((sA - dA) * alpha >> 8);
+		    dR = (Uint8)(dR + ((sR - dR) * alpha >> 8));
+		    dG = (Uint8)(dG + ((sG - dG) * alpha >> 8));
+		    dB = (Uint8)(dB + ((sB - dB) * alpha >> 8));
+		    dA = (Uint8)(dA + ((sA - dA) * alpha >> 8));
 
 		    *((pix) + rshift8) = dR;
 		    *((pix) + gshift8) = dG;
@@ -379,11 +379,11 @@ int _filledRectAlpha(SDL_Surface * surface, Sint16 x1, Sint16 y1, Sint16 x2, Sin
 		    dG = surface->format->palette->colors[*pixel].g;
 		    dB = surface->format->palette->colors[*pixel].b;
 
-		    dR = dR + ((sR - dR) * alpha >> 8);
-		    dG = dG + ((sG - dG) * alpha >> 8);
-		    dB = dB + ((sB - dB) * alpha >> 8);
+		    dR = (Uint8)(dR + ((sR - dR) * alpha >> 8));
+		    dG = (Uint8)(dG + ((sG - dG) * alpha >> 8));
+		    dB = (Uint8)(dB + ((sB - dB) * alpha >> 8));
 
-		    *pixel = SDL_MapRGB(surface->format, dR, dG, dB);
+		    *pixel = (Uint8)SDL_MapRGB(surface->format, dR, dG, dB);
 		}
 	    }
 	}
@@ -404,7 +404,7 @@ int _filledRectAlpha(SDL_Surface * surface, Sint16 x1, Sint16 y1, Sint16 x2, Sin
 		    if (Amask)
 			A = ((*pixel & Amask) + ((dA - (*pixel & Amask)) * alpha >> 8)) & Amask;
 
-		    *pixel = R | G | B | A;
+		    *pixel = (Uint16)(R | G | B | A);
 		}
 	    }
 	}
@@ -413,15 +413,15 @@ int _filledRectAlpha(SDL_Surface * surface, Sint16 x1, Sint16 y1, Sint16 x2, Sin
     case 3:{			/* Slow 24-bpp mode, usually not used */
 	    Uint8 *row, *pix;
 	    Uint8 dR, dG, dB, dA;
-	    Uint8 rshift8 = surface->format->Rshift / 8;
-	    Uint8 gshift8 = surface->format->Gshift / 8;
-	    Uint8 bshift8 = surface->format->Bshift / 8;
-	    Uint8 ashift8 = surface->format->Ashift / 8;
+	    Uint8 rshift8 = (Uint8)(surface->format->Rshift / 8);
+	    Uint8 gshift8 = (Uint8)(surface->format->Gshift / 8);
+	    Uint8 bshift8 = (Uint8)(surface->format->Bshift / 8);
+	    Uint8 ashift8 = (Uint8)(surface->format->Ashift / 8);
 
-	    Uint8 sR = (color >> surface->format->Rshift) & 0xff;
-	    Uint8 sG = (color >> surface->format->Gshift) & 0xff;
-	    Uint8 sB = (color >> surface->format->Bshift) & 0xff;
-	    Uint8 sA = (color >> surface->format->Ashift) & 0xff;
+	    Uint8 sR = (Uint8)((color >> surface->format->Rshift) & 0xff);
+	    Uint8 sG = (Uint8)((color >> surface->format->Gshift) & 0xff);
+	    Uint8 sB = (Uint8)((color >> surface->format->Bshift) & 0xff);
+	    Uint8 sA = (Uint8)((color >> surface->format->Ashift) & 0xff);
 
 	    for (y = y1; y <= y2; y++) {
 		row = (Uint8 *) surface->pixels + y * surface->pitch;
@@ -433,10 +433,10 @@ int _filledRectAlpha(SDL_Surface * surface, Sint16 x1, Sint16 y1, Sint16 x2, Sin
 		    dB = *((pix) + bshift8);
 		    dA = *((pix) + ashift8);
 
-		    dR = dR + ((sR - dR) * alpha >> 8);
-		    dG = dG + ((sG - dG) * alpha >> 8);
-		    dB = dB + ((sB - dB) * alpha >> 8);
-		    dA = dA + ((sA - dA) * alpha >> 8);
+		    dR = (Uint8)(dR + ((sR - dR) * alpha >> 8));
+		    dG = (Uint8)(dG + ((sG - dG) * alpha >> 8));
+		    dB = (Uint8)(dB + ((sB - dB) * alpha >> 8));
+		    dA = (Uint8)(dA + ((sA - dA) * alpha >> 8));
 
 		    *((pix) + rshift8) = dR;
 		    *((pix) + gshift8) = dG;
@@ -614,10 +614,10 @@ int hlineColorStore(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 co
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Check visibility of hline 
@@ -684,22 +684,25 @@ int hlineColorStore(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 co
 	    memset(pixel, color, dx);
 	    break;
 	case 2:
-	    pixellast = pixel + dx + dx;
-	    for (; pixel <= pixellast; pixel += pixx) {
-		*(Uint16 *) pixel = color;
+	    {
+		Uint16 c16 = (Uint16)color;
+		pixellast = pixel + dx + dx;
+		for (; pixel <= pixellast; pixel += pixx) {
+		    memcpy(pixel, &c16, sizeof(Uint16));
+		}
 	    }
 	    break;
 	case 3:
 	    pixellast = pixel + dx + dx + dx;
 	    for (; pixel <= pixellast; pixel += pixx) {
 		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-		    pixel[0] = (color >> 16) & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = color & 0xff;
+		    pixel[0] = (Uint8)((color >> 16) & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)(color & 0xff);
 		} else {
-		    pixel[0] = color & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = (color >> 16) & 0xff;
+		    pixel[0] = (Uint8)(color & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)((color >> 16) & 0xff);
 		}
 	    }
 	    break;
@@ -707,7 +710,7 @@ int hlineColorStore(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 co
 	    dx = dx + dx;
 	    pixellast = pixel + dx + dx;
 	    for (; pixel <= pixellast; pixel += pixx) {
-		*(Uint32 *) pixel = color;
+		memcpy(pixel, &color, sizeof(Uint32));
 	    }
 	    break;
 	}
@@ -747,10 +750,10 @@ int hlineColor(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Check visibility of hline 
@@ -836,22 +839,25 @@ int hlineColor(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)
 	    memset(pixel, color, dx);
 	    break;
 	case 2:
-	    pixellast = pixel + dx + dx;
-	    for (; pixel <= pixellast; pixel += pixx) {
-		*(Uint16 *) pixel = color;
+	    {
+		Uint16 c16 = (Uint16)color;
+		pixellast = pixel + dx + dx;
+		for (; pixel <= pixellast; pixel += pixx) {
+		    memcpy(pixel, &c16, sizeof(Uint16));
+		}
 	    }
 	    break;
 	case 3:
 	    pixellast = pixel + dx + dx + dx;
 	    for (; pixel <= pixellast; pixel += pixx) {
 		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-		    pixel[0] = (color >> 16) & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = color & 0xff;
+		    pixel[0] = (Uint8)((color >> 16) & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)(color & 0xff);
 		} else {
-		    pixel[0] = color & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = (color >> 16) & 0xff;
+		    pixel[0] = (Uint8)(color & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)((color >> 16) & 0xff);
 		}
 	    }
 	    break;
@@ -859,7 +865,7 @@ int hlineColor(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color)
 	    dx = dx + dx;
 	    pixellast = pixel + dx + dx;
 	    for (; pixel <= pixellast; pixel += pixx) {
-		*(Uint32 *) pixel = color;
+		memcpy(pixel, &color, sizeof(Uint32));
 	    }
 	    break;
 	}
@@ -911,10 +917,10 @@ int vlineColor(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Check visibility of vline 
@@ -999,30 +1005,33 @@ int vlineColor(SDL_Surface * dst, Sint16 x, Sint16 y1, Sint16 y2, Uint32 color)
 	switch (dst->format->BytesPerPixel) {
 	case 1:
 	    for (; pixel <= pixellast; pixel += pixy) {
-		*(Uint8 *) pixel = color;
+		*(Uint8 *) pixel = (Uint8)color;
 	    }
 	    break;
 	case 2:
-	    for (; pixel <= pixellast; pixel += pixy) {
-		*(Uint16 *) pixel = color;
+	    {
+		Uint16 c16 = (Uint16)color;
+		for (; pixel <= pixellast; pixel += pixy) {
+		    memcpy(pixel, &c16, sizeof(Uint16));
+		}
 	    }
 	    break;
 	case 3:
 	    for (; pixel <= pixellast; pixel += pixy) {
 		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-		    pixel[0] = (color >> 16) & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = color & 0xff;
+		    pixel[0] = (Uint8)((color >> 16) & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)(color & 0xff);
 		} else {
-		    pixel[0] = color & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = (color >> 16) & 0xff;
+		    pixel[0] = (Uint8)(color & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)((color >> 16) & 0xff);
 		}
 	    }
 	    break;
 	default:		/* case 4 */
 	    for (; pixel <= pixellast; pixel += pixy) {
-		*(Uint32 *) pixel = color;
+		memcpy(pixel, &color, sizeof(Uint32));
 	    }
 	    break;
 	}
@@ -1177,10 +1186,10 @@ static int clipLine(SDL_Surface * dst, Sint16 * x1, Sint16 * y1, Sint16 * x2, Si
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     while (1) {
 	code1 = clipEncode(*x1, *y1, left, top, right, bottom);
@@ -1198,9 +1207,9 @@ static int clipLine(SDL_Surface * dst, Sint16 * x1, Sint16 * y1, Sint16 * x2, Si
 		swaptmp = *y2;
 		*y2 = *y1;
 		*y1 = swaptmp;
-		swaptmp = code2;
+		swaptmp = (Sint16)code2;
 		code2 = code1;
-		code1 = swaptmp;
+		code1 = (int)swaptmp;
 	    }
 	    if (*x2 != *x1) {
 		m = (*y2 - *y1) / (float) (*x2 - *x1);
@@ -1246,10 +1255,10 @@ int boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
     
     /* Check visibility */
     if ((x1<left) && (x2<left)) {
@@ -1367,11 +1376,14 @@ int boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint
 	    }
 	    break;
 	case 2:
-	    pixy -= (pixx * dx);
-	    for (; pixel <= pixellast; pixel += pixy) {
-		for (x = 0; x < dx; x++) {
-		    *(Uint16 *) pixel = color;
-		    pixel += pixx;
+	    {
+		Uint16 c16 = (Uint16)color;
+		pixy -= (pixx * dx);
+		for (; pixel <= pixellast; pixel += pixy) {
+		    for (x = 0; x < dx; x++) {
+			memcpy(pixel, &c16, sizeof(Uint16));
+			pixel += pixx;
+		    }
 		}
 	    }
 	    break;
@@ -1380,13 +1392,13 @@ int boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint
 	    for (; pixel <= pixellast; pixel += pixy) {
 		for (x = 0; x < dx; x++) {
 		    if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-			pixel[0] = (color >> 16) & 0xff;
-			pixel[1] = (color >> 8) & 0xff;
-			pixel[2] = color & 0xff;
+			pixel[0] = (Uint8)((color >> 16) & 0xff);
+			pixel[1] = (Uint8)((color >> 8) & 0xff);
+			pixel[2] = (Uint8)(color & 0xff);
 		    } else {
-			pixel[0] = color & 0xff;
-			pixel[1] = (color >> 8) & 0xff;
-			pixel[2] = (color >> 16) & 0xff;
+			pixel[0] = (Uint8)(color & 0xff);
+			pixel[1] = (Uint8)((color >> 8) & 0xff);
+			pixel[2] = (Uint8)((color >> 16) & 0xff);
 		    }
 		    pixel += pixx;
 		}
@@ -1396,7 +1408,7 @@ int boxColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint
 	    pixy -= (pixx * dx);
 	    for (; pixel <= pixellast; pixel += pixy) {
 		for (x = 0; x < dx; x++) {
-		    *(Uint32 *) pixel = color;
+		    memcpy(pixel, &color, sizeof(Uint32));
 		    pixel += pixx;
 		}
 	    }
@@ -1534,7 +1546,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	switch (dst->format->BytesPerPixel) {
 	case 1:
 	    for (; x < dx; x++, pixel += pixx) {
-		*pixel = color;
+		*pixel = (Uint8)color;
 		y += dy;
 		if (y >= dx) {
 		    y -= dx;
@@ -1543,25 +1555,28 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	    }
 	    break;
 	case 2:
-	    for (; x < dx; x++, pixel += pixx) {
-		*(Uint16 *) pixel = color;
-		y += dy;
-		if (y >= dx) {
-		    y -= dx;
-		    pixel += pixy;
+	    {
+		Uint16 c16 = (Uint16)color;
+		for (; x < dx; x++, pixel += pixx) {
+		    memcpy(pixel, &c16, sizeof(Uint16));
+		    y += dy;
+		    if (y >= dx) {
+			y -= dx;
+			pixel += pixy;
+		    }
 		}
 	    }
 	    break;
 	case 3:
 	    for (; x < dx; x++, pixel += pixx) {
 		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-		    pixel[0] = (color >> 16) & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = color & 0xff;
+		    pixel[0] = (Uint8)((color >> 16) & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)(color & 0xff);
 		} else {
-		    pixel[0] = color & 0xff;
-		    pixel[1] = (color >> 8) & 0xff;
-		    pixel[2] = (color >> 16) & 0xff;
+		    pixel[0] = (Uint8)(color & 0xff);
+		    pixel[1] = (Uint8)((color >> 8) & 0xff);
+		    pixel[2] = (Uint8)((color >> 16) & 0xff);
 		}
 		y += dy;
 		if (y >= dx) {
@@ -1572,7 +1587,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	    break;
 	default:		/* case 4 */
 	    for (; x < dx; x++, pixel += pixx) {
-		*(Uint32 *) pixel = color;
+		memcpy(pixel, &color, sizeof(Uint32));
 		y += dy;
 		if (y >= dx) {
 		    y -= dx;
@@ -1596,7 +1611,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	    int d = ay - (ax >> 1);
 
 	    while (x != x2) {
-		pixelColorNolock (dst, x, y, color);
+		pixelColorNolock (dst, (Sint16)x, (Sint16)y, color);
 		if (d > 0 || (d == 0 && sx == 1)) {
 		    y += sy;
 		    d -= ax;
@@ -1608,7 +1623,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 	    int d = ax - (ay >> 1);
 
 	    while (y != y2) {
-		pixelColorNolock (dst, x, y, color);
+		pixelColorNolock (dst, (Sint16)x, (Sint16)y, color);
 		if (d > 0 || ((d == 0) && (sy == 1))) {
 		    x += sx;
 		    d -= ay;
@@ -1617,7 +1632,7 @@ int lineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uin
 		d += ax;
 	    }
 	}
-	pixelColorNolock (dst, x, y, color);
+	pixelColorNolock (dst, (Sint16)x, (Sint16)y, color);
 
     }
 
@@ -1737,9 +1752,10 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
      */
     intshift = 32 - AAbits;
     /*
-     * Mask used to flip all bits in an intensity weighting 
+     * Mask used to flip all bits in an intensity weighting
      */
     wgtcompmask = AAlevels - 1;
+    (void)wgtcompmask; /* suppress unused variable warning */
 
     /* Lock surface */
     if (SDL_MUSTLOCK(dst)) {
@@ -1761,17 +1777,17 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
 	/*
 	 * y-major.  Calculate 16-bit fixed point fractional part of a pixel that
 	 * X advances every time Y advances 1 pixel, truncating the result so that
-	 * we won't overrun the endpoint along the X axis 
+	 * we won't overrun the endpoint along the X axis
 	 */
 	/*
-	 * Not-so-portable version: erradj = ((Uint64)dx << 32) / (Uint64)dy; 
+	 * Not-so-portable version: erradj = ((Uint64)dx << 32) / (Uint64)dy;
 	 */
-	erradj = ((dx << 16) / dy) << 16;
+	erradj = (Uint32)(((dx << 16) / dy) << 16);
 
 	/*
-	 * draw all pixels other than the first and last 
+	 * draw all pixels other than the first and last
 	 */
-	x0pxdir = xx0 + xdir;
+	x0pxdir = (int)(xx0 + xdir);
 	while (--dy) {
 	    erracctmp = erracc;
 	    erracc += erradj;
@@ -1790,8 +1806,8 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
 	     * the paired pixel. 
 	     */
 	    wgt = (erracc >> intshift) & 255;
-	    result |= pixelColorWeightNolock (dst, xx0, yy0, color, 255 - wgt);
-	    result |= pixelColorWeightNolock (dst, x0pxdir, yy0, color, wgt);
+	    result |= pixelColorWeightNolock (dst, (Sint16)xx0, (Sint16)yy0, color, 255 - wgt);
+	    result |= pixelColorWeightNolock (dst, (Sint16)x0pxdir, (Sint16)yy0, color, wgt);
 	}
 
     } else {
@@ -1799,24 +1815,24 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
 	/*
 	 * x-major line.  Calculate 16-bit fixed-point fractional part of a pixel
 	 * that Y advances each time X advances 1 pixel, truncating the result so
-	 * that we won't overrun the endpoint along the X axis. 
+	 * that we won't overrun the endpoint along the X axis.
 	 */
 	/*
-	 * Not-so-portable version: erradj = ((Uint64)dy << 32) / (Uint64)dx; 
+	 * Not-so-portable version: erradj = ((Uint64)dy << 32) / (Uint64)dx;
 	 */
-	erradj = ((dy << 16) / dx) << 16;
+	erradj = (Uint32)(((dy << 16) / dx) << 16);
 
 	/*
-	 * draw all pixels other than the first and last 
+	 * draw all pixels other than the first and last
 	 */
-	y0p1 = yy0 + 1;
+	y0p1 = (int)(yy0 + 1);
 	while (--dx) {
 
 	    erracctmp = erracc;
 	    erracc += erradj;
 	    if (erracc <= erracctmp) {
 		/*
-		 * Accumulator turned over, advance y 
+		 * Accumulator turned over, advance y
 		 */
 		yy0 = y0p1;
 		y0p1++;
@@ -1825,11 +1841,11 @@ int aalineColorInt(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2
 	    /*
 	     * the AAbits most significant bits of erracc give us the intensity
 	     * weighting for this pixel, and the complement of the weighting for
-	     * the paired pixel. 
+	     * the paired pixel.
 	     */
 	    wgt = (erracc >> intshift) & 255;
-	    result |= pixelColorWeightNolock (dst, xx0, yy0, color, 255 - wgt);
-	    result |= pixelColorWeightNolock (dst, xx0, y0p1, color, wgt);
+	    result |= pixelColorWeightNolock (dst, (Sint16)xx0, (Sint16)yy0, color, 255 - wgt);
+	    result |= pixelColorWeightNolock (dst, (Sint16)xx0, (Sint16)y0p1, color, wgt);
 	}
     }
 
@@ -1902,10 +1918,10 @@ int circleColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 color)
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of circle is visible 
@@ -2143,10 +2159,10 @@ int filledCircleColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 r, Uint32 co
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of circle is visible 
@@ -2272,10 +2288,10 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of ellipse is visible 
@@ -2350,13 +2366,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (k > 0) {
 			ypk = y + k;
 			ymk = y - k;
-			result |= fastPixelColorNolock(dst, xmh, ypk, color);
-			result |= fastPixelColorNolock(dst, xph, ypk, color);
-			result |= fastPixelColorNolock(dst, xmh, ymk, color);
-			result |= fastPixelColorNolock(dst, xph, ymk, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmh, (Sint16)ypk, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xph, (Sint16)ypk, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmh, (Sint16)ymk, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xph, (Sint16)ymk, color);
 		    } else {
-			result |= fastPixelColorNolock(dst, xmh, y, color);
-			result |= fastPixelColorNolock(dst, xph, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmh, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xph, y, color);
 		    }
 		    ok = k;
 		    xpi = x + i;
@@ -2364,13 +2380,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (j > 0) {
 			ypj = y + j;
 			ymj = y - j;
-			result |= fastPixelColorNolock(dst, xmi, ypj, color);
-			result |= fastPixelColorNolock(dst, xpi, ypj, color);
-			result |= fastPixelColorNolock(dst, xmi, ymj, color);
-			result |= fastPixelColorNolock(dst, xpi, ymj, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmi, (Sint16)ypj, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpi, (Sint16)ypj, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmi, (Sint16)ymj, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpi, (Sint16)ymj, color);
 		    } else {
-			result |= fastPixelColorNolock(dst, xmi, y, color);
-			result |= fastPixelColorNolock(dst, xpi, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmi, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpi, y, color);
 		    }
 		    oj = j;
 		}
@@ -2395,13 +2411,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (i > 0) {
 			ypi = y + i;
 			ymi = y - i;
-			result |= fastPixelColorNolock(dst, xmj, ypi, color);
-			result |= fastPixelColorNolock(dst, xpj, ypi, color);
-			result |= fastPixelColorNolock(dst, xmj, ymi, color);
-			result |= fastPixelColorNolock(dst, xpj, ymi, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmj, (Sint16)ypi, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpj, (Sint16)ypi, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmj, (Sint16)ymi, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpj, (Sint16)ymi, color);
 		    } else {
-			result |= fastPixelColorNolock(dst, xmj, y, color);
-			result |= fastPixelColorNolock(dst, xpj, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmj, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpj, y, color);
 		    }
 		    oi = i;
 		    xmk = x - k;
@@ -2409,13 +2425,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (h > 0) {
 			yph = y + h;
 			ymh = y - h;
-			result |= fastPixelColorNolock(dst, xmk, yph, color);
-			result |= fastPixelColorNolock(dst, xpk, yph, color);
-			result |= fastPixelColorNolock(dst, xmk, ymh, color);
-			result |= fastPixelColorNolock(dst, xpk, ymh, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmk, (Sint16)yph, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpk, (Sint16)yph, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmk, (Sint16)ymh, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpk, (Sint16)ymh, color);
 		    } else {
-			result |= fastPixelColorNolock(dst, xmk, y, color);
-			result |= fastPixelColorNolock(dst, xpk, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xmk, y, color);
+			result |= fastPixelColorNolock(dst, (Sint16)xpk, y, color);
 		    }
 		    oh = h;
 		}
@@ -2444,13 +2460,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (k > 0) {
 			ypk = y + k;
 			ymk = y - k;
-			result |= pixelColorNolock (dst, xmh, ypk, color);
-			result |= pixelColorNolock (dst, xph, ypk, color);
-			result |= pixelColorNolock (dst, xmh, ymk, color);
-			result |= pixelColorNolock (dst, xph, ymk, color);
+			result |= pixelColorNolock (dst, (Sint16)xmh, (Sint16)ypk, color);
+			result |= pixelColorNolock (dst, (Sint16)xph, (Sint16)ypk, color);
+			result |= pixelColorNolock (dst, (Sint16)xmh, (Sint16)ymk, color);
+			result |= pixelColorNolock (dst, (Sint16)xph, (Sint16)ymk, color);
 		    } else {
-			result |= pixelColorNolock (dst, xmh, y, color);
-			result |= pixelColorNolock (dst, xph, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xmh, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xph, y, color);
 		    }
 		    ok = k;
 		    xpi = x + i;
@@ -2458,13 +2474,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (j > 0) {
 			ypj = y + j;
 			ymj = y - j;
-			result |= pixelColorNolock (dst, xmi, ypj, color);
-			result |= pixelColorNolock (dst, xpi, ypj, color);
-			result |= pixelColorNolock (dst, xmi, ymj, color);
-			result |= pixelColor(dst, xpi, ymj, color);
+			result |= pixelColorNolock (dst, (Sint16)xmi, (Sint16)ypj, color);
+			result |= pixelColorNolock (dst, (Sint16)xpi, (Sint16)ypj, color);
+			result |= pixelColorNolock (dst, (Sint16)xmi, (Sint16)ymj, color);
+			result |= pixelColor(dst, (Sint16)xpi, (Sint16)ymj, color);
 		    } else {
-			result |= pixelColorNolock (dst, xmi, y, color);
-			result |= pixelColorNolock (dst, xpi, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xmi, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xpi, y, color);
 		    }
 		    oj = j;
 		}
@@ -2489,13 +2505,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (i > 0) {
 			ypi = y + i;
 			ymi = y - i;
-			result |= pixelColorNolock (dst, xmj, ypi, color);
-			result |= pixelColorNolock (dst, xpj, ypi, color);
-			result |= pixelColorNolock (dst, xmj, ymi, color);
-			result |= pixelColorNolock (dst, xpj, ymi, color);
+			result |= pixelColorNolock (dst, (Sint16)xmj, (Sint16)ypi, color);
+			result |= pixelColorNolock (dst, (Sint16)xpj, (Sint16)ypi, color);
+			result |= pixelColorNolock (dst, (Sint16)xmj, (Sint16)ymi, color);
+			result |= pixelColorNolock (dst, (Sint16)xpj, (Sint16)ymi, color);
 		    } else {
-			result |= pixelColorNolock (dst, xmj, y, color);
-			result |= pixelColorNolock (dst, xpj, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xmj, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xpj, y, color);
 		    }
 		    oi = i;
 		    xmk = x - k;
@@ -2503,13 +2519,13 @@ int ellipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 ry, Ui
 		    if (h > 0) {
 			yph = y + h;
 			ymh = y - h;
-			result |= pixelColorNolock (dst, xmk, yph, color);
-			result |= pixelColorNolock (dst, xpk, yph, color);
-			result |= pixelColorNolock (dst, xmk, ymh, color);
-			result |= pixelColorNolock (dst, xpk, ymh, color);
+			result |= pixelColorNolock (dst, (Sint16)xmk, (Sint16)yph, color);
+			result |= pixelColorNolock (dst, (Sint16)xpk, (Sint16)yph, color);
+			result |= pixelColorNolock (dst, (Sint16)xmk, (Sint16)ymh, color);
+			result |= pixelColorNolock (dst, (Sint16)xpk, (Sint16)ymh, color);
 		    } else {
-			result |= pixelColorNolock (dst, xmk, y, color);
-			result |= pixelColorNolock (dst, xpk, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xmk, y, color);
+			result |= pixelColorNolock (dst, (Sint16)xpk, y, color);
 		    }
 		    oh = h;
 		}
@@ -2576,10 +2592,10 @@ int aaellipseColor(SDL_Surface * dst, Sint16 xc, Sint16 yc, Sint16 rx, Sint16 ry
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of ellipse is visible 
@@ -2692,7 +2708,7 @@ int aaellipseColor(SDL_Surface * dst, Sint16 xc, Sint16 yc, Sint16 rx, Sint16 ry
 	result |= pixelColorWeightNolock(dst, xx, yy, color, weight);
     }
 
-    dyt = abs(y - yc);
+    dyt = (Sint16)abs(y - yc);
 
     for (i = 1; i <= dyt; i++) {
 	y++;
@@ -2811,10 +2827,10 @@ int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of ellipse is visible 
@@ -2859,10 +2875,10 @@ int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		xph = x + h;
 		xmh = x - h;
 		if (k > 0) {
-		    result |= hlineColor(dst, xmh, xph, y + k, color);
-		    result |= hlineColor(dst, xmh, xph, y - k, color);
+		    result |= hlineColor(dst, (Sint16)xmh, (Sint16)xph, (Sint16)(y + k), color);
+		    result |= hlineColor(dst, (Sint16)xmh, (Sint16)xph, (Sint16)(y - k), color);
 		} else {
-		    result |= hlineColor(dst, xmh, xph, y, color);
+		    result |= hlineColor(dst, (Sint16)xmh, (Sint16)xph, y, color);
 		}
 		ok = k;
 	    }
@@ -2870,10 +2886,10 @@ int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		xmi = x - i;
 		xpi = x + i;
 		if (j > 0) {
-		    result |= hlineColor(dst, xmi, xpi, y + j, color);
-		    result |= hlineColor(dst, xmi, xpi, y - j, color);
+		    result |= hlineColor(dst, (Sint16)xmi, (Sint16)xpi, (Sint16)(y + j), color);
+		    result |= hlineColor(dst, (Sint16)xmi, (Sint16)xpi, (Sint16)(y - j), color);
 		} else {
-		    result |= hlineColor(dst, xmi, xpi, y, color);
+		    result |= hlineColor(dst, (Sint16)xmi, (Sint16)xpi, y, color);
 		}
 		oj = j;
 	    }
@@ -2896,10 +2912,10 @@ int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		xmj = x - j;
 		xpj = x + j;
 		if (i > 0) {
-		    result |= hlineColor(dst, xmj, xpj, y + i, color);
-		    result |= hlineColor(dst, xmj, xpj, y - i, color);
+		    result |= hlineColor(dst, (Sint16)xmj, (Sint16)xpj, (Sint16)(y + i), color);
+		    result |= hlineColor(dst, (Sint16)xmj, (Sint16)xpj, (Sint16)(y - i), color);
 		} else {
-		    result |= hlineColor(dst, xmj, xpj, y, color);
+		    result |= hlineColor(dst, (Sint16)xmj, (Sint16)xpj, y, color);
 		}
 		oi = i;
 	    }
@@ -2907,10 +2923,10 @@ int filledEllipseColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rx, Sint16 
 		xmk = x - k;
 		xpk = x + k;
 		if (h > 0) {
-		    result |= hlineColor(dst, xmk, xpk, y + h, color);
-		    result |= hlineColor(dst, xmk, xpk, y - h, color);
+		    result |= hlineColor(dst, (Sint16)xmk, (Sint16)xpk, (Sint16)(y + h), color);
+		    result |= hlineColor(dst, (Sint16)xmk, (Sint16)xpk, (Sint16)(y - h), color);
 		} else {
-		    result |= hlineColor(dst, xmk, xpk, y, color);
+		    result |= hlineColor(dst, (Sint16)xmk, (Sint16)xpk, y, color);
 		}
 		oh = h;
 	    }
@@ -2973,10 +2989,10 @@ int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 sta
     /*
      * Get clipping boundary 
      */
-    left = dst->clip_rect.x;
-    right = dst->clip_rect.x + dst->clip_rect.w - 1;
-    top = dst->clip_rect.y;
-    bottom = dst->clip_rect.y + dst->clip_rect.h - 1;
+    left = (Sint16)dst->clip_rect.x;
+    right = (Sint16)(dst->clip_rect.x + dst->clip_rect.w - 1);
+    top = (Sint16)dst->clip_rect.y;
+    bottom = (Sint16)(dst->clip_rect.y + dst->clip_rect.h - 1);
 
     /*
      * Test if bounding box of pie's circle is visible 
@@ -3023,11 +3039,11 @@ int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 sta
     } else if (numpoints == 2) {
 	posX = x + (int) (dr * cos(start_angle));
 	posY = y + (int) (dr * sin(start_angle));
-	return (lineColor(dst, x, y, posX, posY, color));
+	return (lineColor(dst, x, y, (Sint16)posX, (Sint16)posY, color));
     }
 
     /* Allocate vertex array */
-    vx = vy = (Sint16 *) malloc(2 * sizeof(Uint16) * numpoints);
+    vx = vy = (Sint16 *) malloc(2 * sizeof(Uint16) * (size_t)numpoints);
     if (vx == NULL) {
 	return (-1);
     }
@@ -3041,14 +3057,14 @@ int filledpieColor(SDL_Surface * dst, Sint16 x, Sint16 y, Sint16 rad, Sint16 sta
     i = 1;
     angle = start_angle;
     while (angle <= end_angle) {
-	vx[i] = x + (int) (dr * cos(angle));
-	vy[i] = y + (int) (dr * sin(angle));
+	vx[i] = (Sint16)(x + (int) (dr * cos(angle)));
+	vy[i] = (Sint16)(y + (int) (dr * sin(angle)));
 	angle += deltaAngle;
 	i++;
     }
 
     /* Draw */
-    result = filledPolygonColor(dst, vx, vy, numpoints, color);
+    result = filledPolygonColor(dst, vx, vy, numpoints, (int)color);
 
     /* Free vertex array */
     free(vx);
@@ -3284,14 +3300,14 @@ int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int c
     }
 
     /*
-     * Allocate temp array, only grow array 
+     * Allocate temp array, only grow array
      */
     if (!gfxPrimitivesPolyAllocated) {
-	gfxPrimitivesPolyInts = (int *) malloc(sizeof(int) * n);
+	gfxPrimitivesPolyInts = (int *) malloc(sizeof(int) * (size_t)n);
 	gfxPrimitivesPolyAllocated = n;
     } else {
 	if (gfxPrimitivesPolyAllocated < n) {
-	    gfxPrimitivesPolyInts = (int *) realloc(gfxPrimitivesPolyInts, sizeof(int) * n);
+	    gfxPrimitivesPolyInts = (int *) realloc(gfxPrimitivesPolyInts, sizeof(int) * (size_t)n);
 	    gfxPrimitivesPolyAllocated = n;
 	}
     }
@@ -3342,14 +3358,14 @@ int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int c
 	    
 	}
 	
-	qsort(gfxPrimitivesPolyInts, ints, sizeof(int), gfxPrimitivesCompareInt);
+	qsort(gfxPrimitivesPolyInts, (size_t)ints, sizeof(int), gfxPrimitivesCompareInt);
 
 	for (i = 0; (i < ints); i += 2) {
 	    xa = gfxPrimitivesPolyInts[i] + 1;
 	    xa = (xa >> 16) + ((xa & 32768) >> 15);
 	    xb = gfxPrimitivesPolyInts[i+1] - 1;
 	    xb = (xb >> 16) + ((xb & 32768) >> 15);
-	    result |= hlineColor(dst, xa, xb, y, color);
+	    result |= hlineColor(dst, (Sint16)xa, (Sint16)xb, (Sint16)y, (Uint32)color);
 	}
     }
 
@@ -3359,10 +3375,10 @@ int filledPolygonColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int c
 int filledPolygonRGBA(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
     /*
-     * Draw 
+     * Draw
      */
     return (filledPolygonColor
-	    (dst, vx, vy, n, ((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a));
+	    (dst, vx, vy, n, (int)(((Uint32) r << 24) | ((Uint32) g << 16) | ((Uint32) b << 8) | (Uint32) a)));
 }
 
 int gfxPrimitivesCompareInt(const void *a, const void *b)
@@ -3446,10 +3462,10 @@ int bezierColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint3
     stepsize=(double)1.0/(double)s;
     
     /* Transfer vertices into float arrays */
-    if ((x=(double *)malloc(sizeof(double)*(n+1)))==NULL) {
+    if ((x=(double *)malloc(sizeof(double)*(size_t)(n+1)))==NULL) {
      return(-1);
     }
-    if ((y=(double *)malloc(sizeof(double)*(n+1)))==NULL) {
+    if ((y=(double *)malloc(sizeof(double)*(size_t)(n+1)))==NULL) {
      free(x);
      return(-1);
     }    
@@ -3465,8 +3481,8 @@ int bezierColor(SDL_Surface * dst, Sint16 * vx, Sint16 * vy, int n, int s, Uint3
      */
     result = 0;
     t=0.0;
-    x1=evaluateBezier(x,n+1,t);
-    y1=evaluateBezier(y,n+1,t);
+    x1=(Sint16)evaluateBezier(x,n+1,t);
+    y1=(Sint16)evaluateBezier(y,n+1,t);
     for (i = 0; i <= (n*s); i++) {
 	t += stepsize;
 	x2=(Sint16)evaluateBezier(x,n,t);

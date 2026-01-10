@@ -18,7 +18,6 @@ extern "C" {
 class ScriptState : public NoCopy {
     private:
         lua_State *m_state;
-        int m_errorHandlerIndex;
     private:
         void prepareErrorHandler();
         void insertErrorHandler(int index);

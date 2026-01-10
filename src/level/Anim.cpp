@@ -277,7 +277,7 @@ Anim::restoreState(const std::string &state)
         return;
     }
 
-    int i = 0;
+    size_t i = 0;
     std::string effectName = decode(values[i++]);
     int x = decodeInt(values[i++]);
     int y = decodeInt(values[i++]);

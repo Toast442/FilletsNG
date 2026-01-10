@@ -113,7 +113,7 @@ NodeDrawer::drawSelect(const V2 &loc) const
     int radius = max(dot->w, dot->h) / 2 + 1;
     Uint32 colorRGBA = 0xffc61880;
 
-    filledCircleColor(m_screen, loc.getX(), loc.getY(), radius, colorRGBA);
+    filledCircleColor(m_screen, static_cast<Sint16>(loc.getX()), static_cast<Sint16>(loc.getY()), static_cast<Sint16>(radius), colorRGBA);
 }
 //-----------------------------------------------------------------
 /**
@@ -139,10 +139,10 @@ void
 NodeDrawer::drawEdge(const LevelNode *start, const LevelNode *end) const
 {
     //TODO: nice curves
-    Sint16 x1 = start->getLoc().getX();
-    Sint16 y1 = start->getLoc().getY();
-    Sint16 x2 = end->getLoc().getX();
-    Sint16 y2 = end->getLoc().getY();
+    Sint16 x1 = static_cast<Sint16>(start->getLoc().getX());
+    Sint16 y1 = static_cast<Sint16>(start->getLoc().getY());
+    Sint16 x2 = static_cast<Sint16>(end->getLoc().getX());
+    Sint16 y2 = static_cast<Sint16>(end->getLoc().getY());
 
     Uint32 colorRGBA = 0xffff00ff;
     aalineColor(m_screen, x1, y1, x2, y2, colorRGBA);

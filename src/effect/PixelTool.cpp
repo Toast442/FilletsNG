@@ -69,7 +69,7 @@ PixelTool::getPixel(SDL_Surface *surface, int x, int y)
 {
     assert((0 <= x && x < surface->w) && (0 <= y && y < surface->h));
 
-    int bpp = surface->format->BytesPerPixel;
+    Uint8 bpp = surface->format->BytesPerPixel;
     Uint8 *p = static_cast<Uint8*>(surface->pixels) + y * surface->pitch
         + x * bpp;
 
@@ -84,7 +84,7 @@ PixelTool::getPixel(SDL_Surface *surface, int x, int y)
 PixelTool::putPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
     if ((0 <= x && x < surface->w) && (0 <= y && y < surface->h)) {
-        int bpp = surface->format->BytesPerPixel;
+        Uint8 bpp = surface->format->BytesPerPixel;
         Uint8 *p = static_cast<Uint8*>(surface->pixels) + y * surface->pitch
             + x * bpp;
 
@@ -109,10 +109,10 @@ PixelTool::unpackPixel(Uint8 bpp, Uint8 *p)
             return *reinterpret_cast<Uint16*>(p);
         case 3: // 24bit
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-                return p[0] << 16 | p[1] << 8 | p[2];
+                return static_cast<Uint32>(p[0]) << 16 | static_cast<Uint32>(p[1]) << 8 | p[2];
             }
             else {
-                return p[0] | p[1] << 8 | p[2] << 16;
+                return p[0] | static_cast<Uint32>(p[1]) << 8 | static_cast<Uint32>(p[2]) << 16;
             }
         case 4: // 32 bit
             return *reinterpret_cast<Uint32*>(p);
@@ -136,10 +136,10 @@ PixelTool::packPixel(Uint8 bpp, Uint8 *p, Uint32 pixel)
 
     switch(bpp) {
         case 1:
-            *p = pixel;
+            *p = static_cast<Uint8>(pixel);
             break;
         case 2:
-            *reinterpret_cast<Uint16*>(p) = pixel;
+            *reinterpret_cast<Uint16*>(p) = static_cast<Uint16>(pixel);
             break;
         case 3:
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {

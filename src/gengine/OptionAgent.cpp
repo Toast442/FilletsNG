@@ -21,8 +21,7 @@
 #include "OptionParams.h"
 #include "StringMsg.h"
 #include "UnknownMsgException.h"
-#include "minmax.h"
-
+#include <algorithm>
 #include <stdlib.h> //getenv
 #include <string.h> //strlen
 #include <locale.h> //setlocale
@@ -139,7 +138,7 @@ OptionAgent::prepareLang()
     if (getParam("lang").empty()) {
         char *form = setlocale(LC_MESSAGES, NULL);
         if (form) {
-            int size = min(5, (int)strlen(form));
+            size_t size = std::min(static_cast<size_t>(5), strlen(form));
             if (size >= 2) {
                 setParam("lang", std::string(form, size));
             }

@@ -116,9 +116,9 @@ void
 SubTitleAgent::trimRest(std::string &buffer)
 {
     int i;
-    for (i = (int)buffer.size() - 1; i >= 0; --i) {
-        if (buffer[i] == ' ' &&
-                !(i - 2 >= 0 && buffer[i - 2] == ' '))
+    for (i = static_cast<int>(buffer.size()) - 1; i >= 0; --i) {
+        if (buffer[static_cast<size_t>(i)] == ' ' &&
+                !(i - 2 >= 0 && buffer[static_cast<size_t>(i - 2)] == ' '))
         {
             break;
         }
@@ -135,7 +135,7 @@ SubTitleAgent::trimRest(std::string &buffer)
         }
     }
     else {
-        buffer.erase(i);
+        buffer.erase(static_cast<size_t>(i));
     }
 }
 //-----------------------------------------------------------------

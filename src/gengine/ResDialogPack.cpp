@@ -11,7 +11,8 @@
 #include "Log.h"
 #include "Dialog.h"
 #include "OptionAgent.h"
-#include "minmax.h"
+
+#include <algorithm>
 
 //-----------------------------------------------------------------
     void
@@ -29,8 +30,8 @@ ResDialogPack::matchScore(const std::string &first,
         const std::string &second) const
 {
     int score = 0;
-    int minSize = min((int)first.size(), (int)second.size());
-    for (int i = 0; i < minSize; ++i) {
+    size_t minSize = std::min(first.size(), second.size());
+    for (size_t i = 0; i < minSize; ++i) {
         if (first[i] == second[i]) {
             score++;
         }

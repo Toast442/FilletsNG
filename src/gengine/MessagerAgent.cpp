@@ -13,7 +13,7 @@
 #include "BaseListener.h"
 #include "NameException.h"
 
-#include <memory> // for auto_ptr
+#include <memory>
 
 //-----------------------------------------------------------------
 /**
@@ -46,7 +46,7 @@ MessagerAgent::removeListener(const std::string &listenerName)
 void
 MessagerAgent::forwardNewMsg(BaseMsg *msg)
 {
-    std::auto_ptr<BaseMsg> sure_delete(msg);
+    std::unique_ptr<BaseMsg> sure_delete(msg);
 
     const std::string &listenerName = msg->getListenerName();
     LOG_DEBUG(ExInfo("received new message")

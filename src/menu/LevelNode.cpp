@@ -60,7 +60,7 @@ LevelNode::setState(eState state)
             }
             break;
         default:
-            assert(!"unknown level node state");
+            assert(false && "unknown level node state");
             break;
     }
     m_state = state;

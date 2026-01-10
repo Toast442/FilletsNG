@@ -55,8 +55,8 @@ ShapeBuilder::calcShapeHash(const Shape *shape)
     Uint32 hash = 0;
     Shape::const_iterator end = shape->marksEnd();
     for (Shape::const_iterator i = shape->marksBegin(); i != end; ++i) {
-        hash = 31 * hash + i->getX();
-        hash = 31 * hash + i->getY();
+        hash = 31 * hash + static_cast<Uint32>(i->getX());
+        hash = 31 * hash + static_cast<Uint32>(i->getY());
     }
     return hash;
 }

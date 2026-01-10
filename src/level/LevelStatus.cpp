@@ -153,10 +153,10 @@ LevelStatus::compareToBest()
     size_t moves = readSolvedMoves().size();
     int result = 1;
     if (m_bestMoves > 0) {
-        if (m_bestMoves < moves) {
+        if (static_cast<size_t>(m_bestMoves) < moves) {
             result = -1;
         }
-        else if (m_bestMoves == moves) {
+        else if (static_cast<size_t>(m_bestMoves) == moves) {
             result = 0;
         }
     }

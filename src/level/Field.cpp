@@ -28,10 +28,10 @@ Field::Field(int w, int h)
     m_border->rules()->takeField(this);
 
     //NOTE: [y][x] indexes
-    m_marks = new Cube**[m_h];
+    m_marks = new Cube**[static_cast<size_t>(m_h)];
     for (int y = 0; y < m_h; ++y) {
-        m_marks[y] = new Cube*[m_w];
-        memset(m_marks[y], 0, sizeof(Cube *) * m_w);
+        m_marks[y] = new Cube*[static_cast<size_t>(m_w)];
+        memset(m_marks[y], 0, sizeof(Cube *) * static_cast<size_t>(m_w));
     }
 }
 //-----------------------------------------------------------------

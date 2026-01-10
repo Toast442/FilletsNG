@@ -32,8 +32,8 @@ OptionParams::getHelp(const Environ * /*options*/) const
     std::string help;
     t_params::const_iterator end = m_params.end();
     for (t_params::const_iterator i = m_params.begin(); i != end; ++i) {
-        int paramSize = (int)(i->first.size() + getType(i->second.type).size());
-        std::string space = std::string(m_maxSize - paramSize, ' ');
+        int paramSize = static_cast<int>(i->first.size() + getType(i->second.type).size());
+        std::string space = std::string(static_cast<size_t>(m_maxSize - paramSize), ' ');
         help += "  " + i->first + "=<" + getType(i->second.type) + ">";
         help += space + "    " + i->second.help + "\n";
     }

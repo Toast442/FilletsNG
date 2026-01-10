@@ -70,7 +70,7 @@ script_level_action_move(lua_State *L) throw()
     const char *symbol = luaL_checklstring(L, 1, &size);
     if (size != 1) {
         ExInfo error = ExInfo("bad symbol length")
-            .addInfo("length", size)
+            .addInfo("length", static_cast<long>(size))
             .addInfo("symbol", symbol);
         LOG_WARNING(error);
         luaL_error(L, error.what());

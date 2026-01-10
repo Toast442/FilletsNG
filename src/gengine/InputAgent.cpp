@@ -34,7 +34,7 @@ InputAgent::own_init()
 {
     m_keyBinder = new KeyBinder();
     m_handler = NULL;
-    m_keys = (Uint8*)SDL_GetKeyboardState(NULL);
+    m_keys = SDL_GetKeyboardState(NULL);
 }
 //-----------------------------------------------------------------
     void
@@ -112,7 +112,7 @@ InputAgent::getMouseState(Uint8 *out_buttons)
 {
     int x;
     int y;
-    Uint8 pressed = SDL_GetMouseState(&x, &y);
+    Uint8 pressed = static_cast<Uint8>(SDL_GetMouseState(&x, &y));
     if (out_buttons) {
         *out_buttons = pressed;
     }

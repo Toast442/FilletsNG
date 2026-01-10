@@ -132,8 +132,8 @@ Room::addModel(Cube *new_model, Unit *new_unit)
 Room::getModel(int model_index)
 {
     Cube *result = NULL;
-    if (0 <= model_index && model_index < (int)m_models.size()) {
-        result = m_models[model_index];
+    if (0 <= model_index && static_cast<size_t>(model_index) < m_models.size()) {
+        result = m_models[static_cast<size_t>(model_index)];
     }
     else {
         throw LogicException(ExInfo("bad model index")
@@ -199,7 +199,7 @@ Room::playImpact(Cube::eWeight impact)
             playSound("impact_heavy", 50);
             break;
         default:
-            assert(!"unknown impact weight");
+            assert(false && "unknown impact weight");
     }
 }
 //-----------------------------------------------------------------

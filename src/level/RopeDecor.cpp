@@ -34,7 +34,7 @@ RopeDecor::drawOnScreen(const View *view, SDL_Surface *screen)
 
     //NOTE: steel color
     Uint32 colorRGBA = 0x30404eff;
-    lineColor(screen, loc1.getX(), loc1.getY(),
-            loc2.getX(), loc2.getY(), colorRGBA);
+    lineColor(screen, static_cast<Sint16>(loc1.getX()), static_cast<Sint16>(loc1.getY()),
+            static_cast<Sint16>(loc2.getX()), static_cast<Sint16>(loc2.getY()), colorRGBA);
 }
 

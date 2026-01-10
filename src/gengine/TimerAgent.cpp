@@ -50,7 +50,7 @@ TimerAgent::own_update()
 
     now = SDL_GetTicks();
     //NOTE: every cycle have fixed time interval
-    m_nextTime = now + getTimeInterval();
+    m_nextTime = now + static_cast<Uint32>(getTimeInterval());
 
     m_deltaTime = now - m_lastTime;
     m_lastTime = now;

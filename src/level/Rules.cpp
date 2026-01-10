@@ -704,7 +704,7 @@ Rules::getAction() const
         case Dir::DIR_UP: return "move_up";
         case Dir::DIR_DOWN: return "move_down";
         case Dir::DIR_NO: return "rest";
-        default: assert(!"unknown dir"); break;
+        default: assert(false && "unknown dir"); break;
     }
 
     return "rest";

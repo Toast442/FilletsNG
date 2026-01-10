@@ -45,9 +45,9 @@ getModel(lua_State *L, int model_index)
 script_game_setRoomWaves(lua_State *L) throw()
 {
     BEGIN_NOEXCEPTION;
-    float amp = luaL_checknumber(L, 1);
-    float periode = luaL_checknumber(L, 2);
-    float speed = luaL_checknumber(L, 3);
+    float amp = static_cast<float>(luaL_checknumber(L, 1));
+    float periode = static_cast<float>(luaL_checknumber(L, 2));
+    float speed = static_cast<float>(luaL_checknumber(L, 3));
 
     getLevelScript(L)->room()->setWaves(amp, periode, speed);
     END_NOEXCEPTION;

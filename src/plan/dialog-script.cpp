@@ -103,7 +103,7 @@ script_dialog_addFont(lua_State *L) throw()
     int green = luaL_checkint(L, 3);
     int blue = luaL_checkint(L, 4);
 
-    SubTitleAgent::agent()->addFont(name, new Color(red, green, blue));
+    SubTitleAgent::agent()->addFont(name, new Color(static_cast<Uint8>(red), static_cast<Uint8>(green), static_cast<Uint8>(blue)));
 
     END_NOEXCEPTION;
     return 0;

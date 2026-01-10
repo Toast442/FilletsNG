@@ -67,16 +67,16 @@ char
 Unit::driveBorrowed(const InputProvider *input, const KeyControl &buttons)
 {
     if (canDrive()) {
-        if (input->isPressed(buttons.getLeft())) {
+        if (input->isPressed(static_cast<Uint8>(buttons.getLeft()))) {
             return goLeft();
         }
-        if (input->isPressed(buttons.getRight())) {
+        if (input->isPressed(static_cast<Uint8>(buttons.getRight()))) {
             return goRight();
         }
-        if (input->isPressed(buttons.getUp())) {
+        if (input->isPressed(static_cast<Uint8>(buttons.getUp()))) {
             return goUp();
         }
-        if (input->isPressed(buttons.getDown())) {
+        if (input->isPressed(static_cast<Uint8>(buttons.getDown()))) {
             return goDown();
         }
     }
@@ -140,7 +140,7 @@ Unit::myOrder(Dir::eDir dir) const
         case Dir::DIR_DOWN:
             return m_symbols.getDown();
         default:
-            assert(!"unknown dir");
+            assert(false && "unknown dir");
     }
     return ControlSym::SYM_NONE;
 }

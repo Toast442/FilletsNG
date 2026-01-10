@@ -20,7 +20,7 @@ void
 Random::init() {
     srand( static_cast<unsigned>(time(NULL)) );
     for (int i = 0; i < ARRAY_SIZE; ++i) {
-        ms_randArray[i] = randomInt(256);
+        ms_randArray[i] = static_cast<unsigned char>(randomInt(256));
     }
 }
 

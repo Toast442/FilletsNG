@@ -113,7 +113,8 @@ VideoAgent::initVideoMode()
 
 V2 VideoAgent::scaleMouseLoc(const V2 & v)
 {
-    return V2((v.getX() - m_offsetX) / m_sx, (v.getY() - m_offsetY)/ m_sy);
+    return V2(static_cast<int>((v.getX() - m_offsetX) / m_sx),
+              static_cast<int>((v.getY() - m_offsetY) / m_sy));
 }
 
 
@@ -151,8 +152,8 @@ VideoAgent::changeVideoMode(int screen_width, int screen_height)
     SDL_RenderGetScale(m_renderer, &m_sx, &m_sy);
     SDL_RenderGetLogicalSize(m_renderer, &m_lw, &m_lh);
 
-    m_offsetX = ((m_ww-((float)m_lw * m_sx))/2);
-    m_offsetY = ((m_wh-((float)m_lh * m_sy))/2);
+    m_offsetX = static_cast<int>((m_ww - (static_cast<float>(m_lw) * m_sx)) / 2);
+    m_offsetY = static_cast<int>((m_wh - (static_cast<float>(m_lh) * m_sy)) / 2);
 
 
     SDL_Surface *newScreen = SDL_CreateRGBSurface(0, screen_width, screen_height, screen_bpp,

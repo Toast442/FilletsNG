@@ -18,8 +18,8 @@
 : m_models(models)
 {
     m_impact = Cube::NONE;
-    m_stoned = new bool[m_models.size()];
-    memset(m_stoned, false, sizeof(bool) * m_models.size());
+    m_stoned = new bool[static_cast<size_t>(m_models.size())];
+    memset(m_stoned, false, sizeof(bool) * static_cast<size_t>(m_models.size()));
 }
 //-----------------------------------------------------------------
 Landslip::~Landslip()

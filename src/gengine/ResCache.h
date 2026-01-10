@@ -37,7 +37,7 @@ class ResCache : public NoCopy {
          * to prevent an infinite loop.
          */
         ResCache(int capacity, ResourcePack<T> *new_unloader) {
-            m_entries.resize(capacity);
+            m_entries.resize(static_cast<size_t>(capacity));
             for (unsigned int i = 0; i < m_entries.size(); i++) {
                 m_entries[i] = new CacheEntry<T>();
             }

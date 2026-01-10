@@ -19,12 +19,12 @@ class MouseStroke;
  */
 class InputHandler : public InputProvider, public NoCopy {
     private:
-        Uint8 *m_pressed;
+        const Uint8 *m_pressed;
         Uint8 m_buttons;
         V2 m_mouseLoc;
     public:
         InputHandler();
-        void takePressed(Uint8 *pressed) { m_pressed = pressed; }
+        void takePressed(const Uint8 *pressed) { m_pressed = pressed; }
         void mouseState(const V2 &loc, Uint8 buttons);
 
         virtual void keyEvent(const KeyStroke &/*stroke*/) {}

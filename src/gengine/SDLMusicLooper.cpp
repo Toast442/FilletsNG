@@ -87,7 +87,7 @@ void
 SDLMusicLooper::lookupLoopData(const Path &file, int multiplier)
 {
     m_startLoop = 0;
-    m_endLoop = m_music->alen;
+    m_endLoop = static_cast<int>(m_music->alen);
 
     std::string metafile = file.getNative() + ".meta";
     char buffer[1024];
@@ -112,8 +112,8 @@ SDLMusicLooper::lookupLoopData(const Path &file, int multiplier)
 
     m_startLoop = (int)strtol(lines[0].c_str(), NULL, 10) * multiplier;
     m_endLoop = (int)strtol(lines[1].c_str(), NULL, 10) * multiplier;
-    if ((unsigned int)m_endLoop > m_music->alen) {
-        m_endLoop = m_music->alen;
+    if (static_cast<Uint32>(m_endLoop) > m_music->alen) {
+        m_endLoop = static_cast<int>(m_music->alen);
     }
     LOG_DEBUG(ExInfo("looping music")
             .addInfo("start", m_startLoop / multiplier)
@@ -129,16 +129,16 @@ SDLMusicLooper::musicOutput(void *udata, Uint8 *stream, int length)
     SDLMusicLooper *that = (SDLMusicLooper*)udata;
     int n;
 
-    memset(stream, 0, length);
+    memset(stream, 0, static_cast<size_t>(length));
     while (length >= that->m_endLoop - that->m_position) {
         n = that->m_endLoop - that->m_position;
-        SDL_MixAudio(stream, that->m_music->abuf + that->m_position, n,
+        SDL_MixAudio(stream, that->m_music->abuf + that->m_position, static_cast<Uint32>(n),
                      that->m_volume);
         stream += n;
         length -= n;
         that->m_position = that->m_startLoop;
     }
-    SDL_MixAudio(stream, that->m_music->abuf + that->m_position, length,
+    SDL_MixAudio(stream, that->m_music->abuf + that->m_position, static_cast<Uint32>(length),
                  that->m_volume);
     that->m_position += length;
 }

@@ -22,10 +22,10 @@ FinderField::FinderField(int w, int h)
     m_h = h;
 
     //NOTE: [y][x] indexes
-    m_closed = new bool*[m_h];
+    m_closed = new bool*[static_cast<size_t>(m_h)];
     for (int y = 0; y < m_h; ++y) {
-        m_closed[y] = new bool[m_w];
-        memset(m_closed[y], false, sizeof(bool) * m_w);
+        m_closed[y] = new bool[static_cast<size_t>(m_w)];
+        memset(m_closed[y], false, sizeof(bool) * static_cast<size_t>(m_w));
     }
 }
 //-----------------------------------------------------------------
@@ -44,7 +44,7 @@ void
 FinderField::reset()
 {
     for (int y = 0; y < m_h; ++y) {
-        memset(m_closed[y], false, sizeof(bool) * m_w);
+        memset(m_closed[y], false, sizeof(bool) * static_cast<size_t>(m_w));
     }
 }
 //-----------------------------------------------------------------

@@ -35,7 +35,7 @@ Dir::dir2xy(eDir dir)
         case DIR_NO:
             break;
         default:
-            assert(!"unknown dir");
+            assert(false && "unknown dir");
             break;
     }
 
